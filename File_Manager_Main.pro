@@ -100,43 +100,60 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++17
 
 SOURCES += \
-        main.cpp \
     Action.cpp \
+    DocWindow.cpp \
+    EditorSearchPanel.cpp \
     FileSystemModelFilterProxyModel.cpp \
+    FindReplaceController.cpp \
     MainWindow.cpp \
     Pane.cpp \
     PaneSwitcher.cpp \
-    Properties.cpp \
     SearchPanel.cpp \
-    TextEditor.cpp \
-    DocWindow.cpp \
     StringSet.cpp \
-    EditorSearchPanel.cpp \
-    FindReplaceController.cpp \
-    DefaultViewSettings.cpp \
-    TreeView.cpp \
-    ListView.cpp \
-    TableView.cpp \
-    Parameters.cpp
+    TextEditor.cpp \
+    main.cpp \
+    Cell.cpp \
+    SpreadSheetCompare.cpp \
+    SpreadsheetWindow.cpp \
+    Views/ListView.cpp \
+    Views/TableView.cpp \
+    Views/TreeView.cpp \
+    Views/DefaultViewSettings.cpp \
+    Views/ProxyTreeView.cpp \
+    SpreadSheet.cpp \
+    Dialogs/FindDialog.cpp \
+    Dialogs/GoToCellDialog.cpp \
+    Dialogs/SortDialog.cpp \
+    Dialogs/Parameters.cpp \
+    Dialogs/Properties.cpp
 
 HEADERS += \
     Action.h \
+    DocWindow.h \
+    EditorSearchPanel.h \
     FileSystemModelFilterProxyModel.h \
+    FindReplaceController.h \
+    ISettings.h \
     MainWindow.h \
     Pane.h \
     PaneSwitcher.h \
-    Properties.h \
     SearchPanel.h \
-    TextEditor.h \
-    DocWindow.h \
     StringSet.h \
-    EditorSearchPanel.h \
-    FindReplaceController.h \
-    DefaultViewSettings.h \
-    TreeView.h \
-    ListView.h \
-    TableView.h \
-    Parameters.h
+    TextEditor.h \
+    Views/DefaultViewSettings.h \
+    Views/ListView.h \
+    Views/TableView.h \
+    Views/TreeView.h \
+    Views/ProxyTreeView.h \
+    SpreadSheet.h \
+    Cell.h \
+    SpreadSheetCompare.h \
+    SpreadsheetWindow.h \
+    Dialogs/Parameters.h \
+    Dialogs/Properties.h \
+    Dialogs/FindDialog.h \
+    Dialogs/GoToCellDialog.h \
+    Dialogs/SortDialog.h
 
 
 # Default rules for deployment.
@@ -146,4 +163,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     resources.qrc
+<<<<<<< HEAD
 >>>>>>> File_Manager_Main 2.0
+=======
+
+FORMS += \
+    Dialogs/gotocelldialog.ui \
+    Dialogs/sortdialog.ui
+>>>>>>> Spreadsheet Conception:

@@ -1,6 +1,6 @@
 #include <QHeaderView>
 
-#include "TableView.h"
+#include "Views/TableView.h"
 
 TableView::TableView(QWidget* parent): QTableView(parent) {
     setDefaultViewSettings(this);

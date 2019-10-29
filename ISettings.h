@@ -4,7 +4,6 @@
 
 class ISettings {
 public:
-    virtual QSettings* restoreState() const = 0;
+    virtual QSettings* restoreState() = 0;
     virtual void saveState(QSettings*) const = 0;
-    virtual ~ISettings();
 };

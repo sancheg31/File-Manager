@@ -23,7 +23,6 @@ public:
     bool replaceNext();
     bool replacePrevious();
 
-
 private:
 
     void replace(int);

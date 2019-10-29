@@ -1,12 +1,9 @@
 #include <QtGui>
 
-#include "sortdialog.h"
+#include "SortDialog.h"
 
-SortDialog::SortDialog(QWidget *parent)
-    : QDialog(parent)
-{
+SortDialog::SortDialog(QWidget *parent): QDialog(parent) {
     setupUi(this);
-
     secondaryGroupBox->hide();
     tertiaryGroupBox->hide();
     layout()->setSizeConstraint(QLayout::SetFixedSize);
@@ -14,8 +11,7 @@ SortDialog::SortDialog(QWidget *parent)
     setColumnRange('A', 'Z');
 }
 
-void SortDialog::setColumnRange(QChar first, QChar last)
-{
+void SortDialog::setColumnRange(QChar first, QChar last) {
     primaryColumnCombo->clear();
     secondaryColumnCombo->clear();
     tertiaryColumnCombo->clear();

@@ -5,14 +5,16 @@
 #include "TextEditor.h"
 
 TextEditor::TextEditor(QWidget * wgt): QMainWindow(wgt), bottomToolBar(new QToolBar), menuWindows(new QMenu("&Windows")),
-                      settings(new QSettings("Kushnirenko, K-26", "MDI Text Editor")), searchPanel(new EditorSearchPanel()),
+                      searchPanel(new EditorSearchPanel()),
                       searchController(new FindReplaceController())
 {
     setWindowTitle("MDI Text Editor");
     setWindowIcon(QIcon(":/Images/Notepad.ico"));
 
-    connect(searchPanel->searchForLine, SIGNAL(textChanged(const QString&)), searchController, SLOT(changeFindLine(const QString&)));
-    connect(searchPanel->replaceLine, SIGNAL(textChanged(const QString&)), searchController, SLOT(changeReplaceLine(const QString&)));
+    connect(searchPanel->searchForLine, SIGNAL(textChanged(const QString&)),
+            searchController, SLOT(changeFindLine(const QString&)));
+    connect(searchPanel->replaceLine, SIGNAL(textChanged(const QString&)),
+            searchController, SLOT(changeReplaceLine(const QString&)));
     connect(searchPanel->isCaseSensitive, SIGNAL(toggled(bool)), searchController, SLOT(changeSensivity(bool)));
 
     QToolBar* topToolBar = new QToolBar;
@@ -34,7 +36,7 @@ TextEditor::TextEditor(QWidget * wgt): QMainWindow(wgt), bottomToolBar(new QTool
     setCentralWidget(area);
     mapper = new QSignalMapper(this);
     connect(mapper, SIGNAL(mapped(QWidget*)), this, SLOT(slotSetActiveSubWindow(QWidget*)));
-    restoreState();
+    settings = restoreState();
     statusBar()->showMessage("Ready", 3000);
 
 }
@@ -54,7 +56,8 @@ void TextEditor::loadFile(const QFileInfo& fileInfo) {
 }
 
 void TextEditor::slotShow() {
-    this->show();
+    show();
+    raise();
 }
 
 DocWindow* TextEditor::createNewDocument() {
@@ -75,7 +78,8 @@ DocWindow* TextEditor::createNewDocument() {
     return doc;
 }
 
-void TextEditor::restoreState() {
+QSettings* TextEditor::restoreState() {
+    QSettings* settings = new QSettings("Kushnirenko, K-26", "MDI Text Editor");
     restoreGeometry(settings->value("Geometry").toByteArray());
     bottomToolBar->setVisible(settings->value("ShowBottomToolBar", QVariant(true)).toBool());
     int listCount(settings->value("FileNumber").toInt());
@@ -94,9 +98,10 @@ void TextEditor::restoreState() {
             doc->show();
         }
     }
+    return settings;
 }
 
-void TextEditor::saveState() {
+void TextEditor::saveState(QSettings* settings) const {
     auto list = activeFiles.toList();
     settings->setValue("Geometry", saveGeometry());
     settings->setValue("ShowBottomToolBar", bottomToolBar->isVisible());
@@ -114,7 +119,7 @@ void TextEditor::saveState() {
 }
 
 void TextEditor::closeEvent(QCloseEvent * event) {
-    saveState();
+    saveState(settings);
     QMainWindow::closeEvent(event);
 }
 

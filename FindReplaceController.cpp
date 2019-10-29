@@ -3,7 +3,9 @@
 #include "FindReplaceController.h"
 #include "docwindow.h"
 
-FindReplaceController::FindReplaceController(bool b, QObject * obj): QObject(obj), edit(nullptr), f(""), r(""), isCaseSensitive(b) {
+FindReplaceController::FindReplaceController(bool b, QObject * obj): QObject(obj), edit(nullptr),
+    f(""), r(""), isCaseSensitive(b) {
+
 }
 
 FindReplaceController::FindReplaceController(QTextEdit* e, const QString& find, const QString& replace,

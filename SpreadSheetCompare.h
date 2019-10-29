@@ -1,11 +1,12 @@
-#ifndef SPREADSHEETCOMPARE_H
-#define SPREADSHEETCOMPARE_H
+#pragma once
 
+#include <QStringList>
 
-class SpreadsheetCompare
-{
+class SpreadsheetCompare {
 public:
-    SpreadsheetCompare();
-};
+    bool operator()(const QStringList &row1, const QStringList &row2) const;
 
-#endif // SPREADSHEETCOMPARE_H
+    static const int KeyCount = 3;
+    int keys[KeyCount];
+    bool ascending[KeyCount];
+};

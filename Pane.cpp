@@ -6,8 +6,7 @@ Pane::Pane(QFileSystemModel* model, QWidget* parent) : QFrame (parent), treeView
 {
 
     fileModel = model;
-    connect(pathLineEdit, SIGNAL(editingFinished()), this, SLOT(slotPathLineEditChanged()));    //changing root path
-
+    connect(pathLineEdit, SIGNAL(editingFinished()), this, SLOT(slotPathLineEditChanged()));
     treeView->setModel(fileModel);
     listView->setModel(fileModel);
     tableView->setModel(fileModel);
@@ -24,9 +23,9 @@ Pane::Pane(QFileSystemModel* model, QWidget* parent) : QFrame (parent), treeView
     connect(tableView, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(slotShowContextMenu(const QPoint&)));
 
     stackedWidget = new QStackedWidget();
-    stackedWidget->addWidget(treeView);
-    stackedWidget->addWidget(listView);
-    stackedWidget->addWidget(tableView);
+    stackedWidget->insertWidget(TreeViewMode, treeView);
+    stackedWidget->insertWidget(ListViewMode, listView);
+    stackedWidget->insertWidget(TableViewMode, tableView);
 
     QVBoxLayout* vBoxLayout = new QVBoxLayout(this);
     vBoxLayout->addWidget(pathLineEdit);

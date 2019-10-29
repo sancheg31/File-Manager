@@ -2,15 +2,16 @@
 
 #include <QtWidgets>
 
+#include "ISettings.h"
 #include "EditorSearchPanel.h"
 #include "DocWindow.h"
 #include "StringSet.h"
-#include "findReplaceController.h"
+#include "FindReplaceController.h"
 
 class QMdiArea;
 class SearchPanel;
 
-class TextEditor: public QMainWindow {
+class TextEditor: public QMainWindow, private ISettings {
 Q_OBJECT
 
 public:
@@ -62,8 +63,8 @@ private:
     void loadFiles(const QStringList&);
     void loadFiles(const QList<QFileInfo>&);
 
-    void restoreState();
-    void saveState();
+    virtual QSettings* restoreState() override;
+    virtual void saveState(QSettings*) const override;
 
     DocWindow* createNewDocument();
 

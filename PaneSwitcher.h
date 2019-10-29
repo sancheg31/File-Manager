@@ -7,12 +7,17 @@
 class PaneSwitcher: public QObject {
     Q_OBJECT
 public:
+
     PaneSwitcher(Pane*, Pane*, QObject* = nullptr);
 
-    Pane* activePane() const;
-    Pane* inactivePane() const;
-    Pane* leftPane() const;
-    Pane* rightPane() const;
+    enum PaneType {
+        LeftPane = 1,
+        RightPane = 2,
+        ActivePane = 4
+    };
+
+    Pane* getPane(PaneType) const;
+
     bool isActive(Pane*) const;
 
     void setActivePane(Pane*);

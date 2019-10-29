@@ -1,5 +1,5 @@
-#ifndef SEARCHPANEL_H
-#define SEARCHPANEL_H
+#pragma once
+
 #include <QWidget>
 #include <QLabel>
 #include <QLineEdit>
@@ -32,5 +32,3 @@ public:
 private slots:
     void setButtonsEnabled(const QString&);
 };
-
-#endif // SEARCHPANEL_H

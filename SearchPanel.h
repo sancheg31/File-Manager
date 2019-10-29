@@ -3,6 +3,7 @@
 #include <QWidget>
 #include <QDir>
 
+#include "ISettings.h"
 #include "MainWindow.h"
 
 class QComboBox;
@@ -11,7 +12,7 @@ class QPushButton;
 class QTableWidget;
 
 
-class SearchPanel : public QWidget {
+class SearchPanel : public QWidget, private ISettings {
     Q_OBJECT
 public:
     SearchPanel(QWidget *parent = nullptr);
@@ -21,7 +22,11 @@ public:
 
 protected:
     void closeEvent(QCloseEvent* event);
+
 private slots:
+
+    void slotShow();
+    void slotStopButtonClicked();
     void browse();
 
     void startFind();
@@ -31,8 +36,8 @@ private slots:
 
 private:
 
-    void saveState();
-    void restoreState();
+    virtual void saveState(QSettings*) const override;
+    virtual QSettings* restoreState() override;
 
     QStringList findFiles(const QStringList &files, const QString &text);
     void showFiles(const QStringList &paths);
@@ -49,12 +54,15 @@ private:
     QCheckBox* wholeWordCheckBox;
 
     QLabel *filesFoundLabel;
-    QPushButton *findButton;
+    QPushButton* findButton;
+    QPushButton* stopButton;
     QTableWidget *filesTable;
 
     QSettings* settings;
 
     QDir currentDir;
+
+    bool stopIsClicked;
 
 signals:
     void fileLoaded(const QFileInfo&);

@@ -11,5 +11,3 @@ QAbstractItemView* DefaultViewSettings::setDefaultViewSettings(QAbstractItemView
     view->setContextMenuPolicy(Qt::CustomContextMenu);
     return view;
 }
-
-DefaultViewSettings::~DefaultViewSettings() {}

@@ -2,16 +2,19 @@
 #include "Action.h"
 #include "MainWindow.h"
 #include "Pane.h"
-#include "Parameters.h"
-#include "Properties.h"
+#include "Dialogs/Parameters.h"
+#include "Dialogs/Properties.h"
 #include "SearchPanel.h"
 #include "FileSystemModelFilterProxyModel.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), fileSystemModel(new QFileSystemModel()),
-    searchPanel(new SearchPanel()), manualEditor(new TextEditor()),
-    splitter(new QSplitter()), settings(new QSettings("Kushnirenko, K-26", "File Manager"))
+    searchPanel(new SearchPanel()), manualEditor(new TextEditor()), spreadsheet(new SpreadsheetWindow()),
+    menuBar(new QMenuBar()), splitter(new QSplitter())
 {
+    qDebug() << "MainWindow constructor starts";
     paneSwitcher = new PaneSwitcher(createPane(), createPane());
+    directoryTreeView = new ProxyTreeView(splitter);
+    setMenuBar(menuBar);
     setWindowTitle(tr("File Manager, Kushnirenko"));
     createActionsAndMenus();
 
@@ -24,23 +27,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), fileSystemModel(n
     fileSystemProxyModel = new FileSystemModelFilterProxyModel();
     fileSystemProxyModel->setSourceModel(fileSystemModel);
     fileSystemProxyModel->setSortCaseSensitivity(Qt::CaseSensitive);
-    //fileSystemProxyModel->sort(0);
 
-    directoryTreeView = new QTreeView(splitter);
     directoryTreeView->setModel(fileSystemProxyModel);
-    directoryTreeView->setHeaderHidden(true);
-    directoryTreeView->setUniformRowHeights(true);
-    directoryTreeView->hideColumn(1);
-    directoryTreeView->hideColumn(2);
-    directoryTreeView->hideColumn(3);
-    directoryTreeView->setDragDropMode(QAbstractItemView::DropOnly);
-    directoryTreeView->setDefaultDropAction(Qt::MoveAction);
-    directoryTreeView->setDropIndicatorShown(true);
-    directoryTreeView->setEditTriggers(QAbstractItemView::EditKeyPressed | QAbstractItemView::SelectedClicked);
-    directoryTreeView->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(directoryTreeView, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(slotShowContextDirectoryMenu(const QPoint&)));
 
-    connect(treeSelectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)),
+    connect(directoryTreeView->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)),
             this, SLOT(slotTreeSelectionChanged(const QModelIndex&, const QModelIndex&)));
 
     connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), this, SLOT(slotFocusChanged(QWidget*, QWidget*)));
@@ -52,15 +43,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), fileSystemModel(n
 
     this->setCentralWidget(splitter);
     connect(QApplication::clipboard(), SIGNAL(changed(QClipboard::Mode)), this, SLOT(clipboardChanged()));
-    restoreState();
-    setActivePane(leftPane());
+    settings = restoreState();
     connect(activePane()->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
             this, SLOT(slotActivePaneSelectionChanged(const QItemSelection&, const QItemSelection&)));
-
-}
-
-QItemSelectionModel* MainWindow::treeSelectionModel() const {
-    return directoryTreeView->selectionModel();
+    qDebug() << "MainWindow constructor ends";
 }
 
 void MainWindow::clipboardChanged() {
@@ -107,15 +93,15 @@ void MainWindow::setActivePane(Pane* pane) {
 }
 
 Pane* MainWindow::activePane() const {
-    return paneSwitcher->activePane();
+    return paneSwitcher->getPane(PaneSwitcher::ActivePane);
 }
 
 Pane* MainWindow::leftPane() const {
-    return paneSwitcher->leftPane();
+    return paneSwitcher->getPane(PaneSwitcher::LeftPane);
 }
 
 Pane* MainWindow::rightPane() const {
-    return paneSwitcher->rightPane();
+    return paneSwitcher->getPane(PaneSwitcher::RightPane);
 }
 
 void MainWindow::slotTreeSelectionChanged(const QModelIndex& current, const QModelIndex&) {
@@ -127,16 +113,23 @@ void MainWindow::slotTreeSelectionChanged(const QModelIndex& current, const QMod
 
 void MainWindow::slotActivePaneSelectionChanged(const QItemSelection& cur, const QItemSelection&) {
     deleteAction->setEnabled(!cur.isEmpty());
+    cutAction->setEnabled(!cur.isEmpty());
+    copyAction->setEnabled(!cur.isEmpty());
+    QString str = QString("%1 items selected, row %2").arg(cur.count()).arg(
+                activePane()->selectionModel()->currentIndex().row());
+    statusBar()->clearMessage();
+    statusBar()->showMessage(str, -1);
 }
 
 void MainWindow::moveTo(const QString& path) {
     QModelIndex index = fileSystemProxyModel->mapFromSource(fileSystemModel->index(path));
-    treeSelectionModel()->select(index, QItemSelectionModel::Select);
+    directoryTreeView->selectionModel()->select(index, QItemSelectionModel::Select);
     activePane()->moveTo(path);
 }
 
 void MainWindow::slotShowSearchPanel() {
     searchPanel->show();
+    searchPanel->raise();
 }
 
 void MainWindow::slotShowContextPaneMenu(const QModelIndexList& list, const QPoint& position) {
@@ -154,15 +147,15 @@ void MainWindow::slotOpenFile() {
     QFileInfo fileInfo = fileSystemModel->fileInfo(activePane()->selectionModel()->currentIndex());
     if (fileInfo.isFile()) {
         manualEditor->loadFile(fileInfo);
-        manualEditor->show();
+        manualEditor->slotShow();
     }
 }
 
 void MainWindow::slotOpenDir() {
-    QFileInfo fileInfo = fileSystemModel->fileInfo(paneSwitcher->activePane()->selectionModel()->currentIndex());
+    QFileInfo fileInfo = fileSystemModel->fileInfo(activePane()->selectionModel()->currentIndex());
     if (!fileInfo.isDir())
         return;
-    activePane()->slotDoubleClickedOnEntry(paneSwitcher->activePane()->selectionModel()->currentIndex());
+    activePane()->slotDoubleClickedOnEntry(activePane()->selectionModel()->currentIndex());
 }
 
 void MainWindow::slotCut() {
@@ -171,8 +164,9 @@ void MainWindow::slotCut() {
         return;
     selectionList = activePane()->selectionModel()->selectedIndexes();
 
-    if(selectionList.count() == 0)
+    if(selectionList.count() == 0) {
         return;
+    }
     QApplication::clipboard()->setMimeData(fileSystemModel->mimeData(selectionList));
     pasteAction->setData(true);
 
@@ -188,16 +182,16 @@ void MainWindow::slotCopy() {
         selectionList << fileSystemProxyModel->mapToSource(directoryTreeView->currentIndex());
     }
 
-    if (selectionList.count() == 0)
+    if (selectionList.count() == 0) {
         return;
+    }
     QApplication::clipboard()->setMimeData(fileSystemModel->mimeData(selectionList));
     pasteAction->setData(false);
 
 }
 
 
-void MainWindow::copyPath(QString source, QString dist)
-{
+void MainWindow::copyPath(const QString& source, const QString& dist) {
     QDir dir(source);
     if (!dir.exists())
         return;
@@ -225,7 +219,6 @@ void MainWindow::copyFolders(const QModelIndexList& list, const QString& dist) {
     QFileInfo fileInfo = fileSystemModel->fileInfo(list.at(i));
     QString topSelection = fileInfo.absolutePath();
     while (fileInfo.absolutePath() == topSelection && i < list.count()) {
-        //qDebug() << fileInfo.absolutePath() << " " << topSelection << " " << dist;
         if (fileInfo.isDir())
             copyPath(fileInfo.absoluteFilePath(), dist);
         fileInfo = fileSystemModel->fileInfo(list.at(i++));
@@ -261,6 +254,8 @@ void MainWindow::slotDel() {
     if (!(focusWidget() == activePane()->focusWidget()))
         return;
     selectionList = activePane()->selectionModel()->selectedIndexes();
+    if (selectionList.count() == 0)
+        return;
 
     for(int i = 0; i < selectionList.count(); ++i) {
 
@@ -325,7 +320,7 @@ void MainWindow::slotNewTxt() {
     }
     QModelIndex fileIndex = fileSystemModel->index(newFile.fileName());
     currentView->setCurrentIndex(fileIndex);
-    //currentView->edit(fileIndex);
+    currentView->edit(fileIndex);
     newFile.close();
 
 }
@@ -338,7 +333,7 @@ void MainWindow::slotToggleHidden() {
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-    saveState();
+    saveState(settings);
     QMainWindow::closeEvent(event);
 }
 
@@ -360,20 +355,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
     QMainWindow::keyPressEvent(event);
 }
 
-void MainWindow::keyReleaseEvent(QKeyEvent* event) {
-    QMainWindow::keyReleaseEvent(event);
-}
-
-void MainWindow::mousePressEvent(QMouseEvent* event) {
-    QMainWindow::mousePressEvent(event);
-}
-
-void MainWindow::mouseReleaseEvent(QMouseEvent* event) {
-    QMainWindow::mouseReleaseEvent(event);
-}
-
-void MainWindow::saveState()
-{
+void MainWindow::saveState(QSettings* settings) const {
     settings->setValue("Geometry", saveGeometry());
     settings->setValue("ShowStatusBar", statusBar()->isVisible());
     settings->setValue("ShowToolBar", topToolBar->isVisible());
@@ -391,13 +373,13 @@ void MainWindow::saveState()
     settings->setValue("ShowHidden", hiddenAction->isChecked());
 }
 
-void MainWindow::restoreState()
-{
+QSettings* MainWindow::restoreState() {
+    QSettings * settings = new QSettings("Kushnirenko, K-26", "File Manager");
     restoreGeometry(settings->value("Geometry").toByteArray());
     topToolBar->setVisible(settings->value("ShowToolBar", QVariant(true)).toBool());
     statusBar()->setVisible(settings->value("ShowStatusBar", QVariant(false)).toBool());
     splitter->restoreState(settings->value("MainSplitterSizes").toByteArray());
-    setActivePane(settings->value("LeftPaneActive", 1).toBool() ? leftPane() : rightPane());
+    paneSwitcher->setActivePane(settings->value("LeftPaneActive", 1).toBool() ? leftPane() : rightPane());
     leftPane()->treeView->header()->restoreState(settings->value("LeftPaneFileListHeader").toByteArray());
     leftPane()->moveTo(settings->value("LeftPanePath", "").toString());
     leftPane()->setFocusViewIndex(settings->value("LeftPaneViewMode", 0).toInt());
@@ -406,19 +388,19 @@ void MainWindow::restoreState()
     rightPane()->setFocusViewIndex(settings->value("RightPaneViewMode", 0).toInt());
     hiddenAction->setChecked(settings->value("ShowHidden", false).toBool());
     slotToggleHidden();
+    return settings;
 }
 
 void MainWindow::updateViewActions() {
 
-    switch (activePane()->focusViewIndex())
-    {
-    case Pane::ViewMode::TreeViewMode:
+    switch (activePane()->focusViewIndex()) {
+    case Pane::TreeViewMode:
         detailViewAction->setChecked(true);
         break;
-    case Pane::ViewMode::ListViewMode:
+    case Pane::ListViewMode:
         iconViewAction->setChecked(true);
         break;
-    case Pane::ViewMode::TableViewMode:
+    case Pane::TableViewMode:
         tileViewAction->setChecked(true);
         break;
     }
@@ -464,14 +446,10 @@ QList<QPair<QString, bool>> MainWindow::formParametersList() const {
 void MainWindow::createActionsAndMenus() {
 
     createActions();
-    //creating tree, list and table views for pane
     createViewChangeActions();
     createViewActionGroup();
 
-    menuBar = new QMenuBar();
     createMenus();
-    setMenuBar(menuBar);
-
     createTopToolBar();
     createContextMenus();
 
@@ -486,10 +464,12 @@ void MainWindow::createActions() {
 
     cutAction = Action::create(QIcon::fromTheme("edit-cut", QIcon(":/Images/Cut.png")), tr("&Cut"),
                             "Cut File", QKeySequence::Cut);
+    cutAction->setEnabled(false);
     connect(cutAction, SIGNAL(triggered()), this, SLOT(slotCut()));
 
     copyAction = Action::create(QIcon::fromTheme("edit-copy", QIcon(":/Images/Copy.png")), tr("&Copy"),
                              "Copy File", QKeySequence::Copy);
+    copyAction->setEnabled(false);
     connect(copyAction, SIGNAL(triggered()), this, SLOT(slotCopy()));
 
     pasteAction = Action::create(QIcon::fromTheme("edit-paste", QIcon(":/Images/Paste.png")), tr("Paste"),
@@ -525,6 +505,9 @@ void MainWindow::createActions() {
                                       "Open File Editor");
     connect(openEditorAction, SIGNAL(triggered()), manualEditor, SLOT(slotShow()));
 
+    openSpreadsheetAction = Action::create(QIcon::fromTheme("edit-new-spreadsheet", QIcon(":/Images/Spreadsheet.ico")), tr("&Spreadsheet"),
+                                      "Open Spreadsheet");
+    connect(openSpreadsheetAction, SIGNAL(triggered()), spreadsheet, SLOT(slotShow()));
     aboutCreatorAction = Action::create(QIcon::fromTheme("help-about", QIcon(":/Images/About.ico")), tr("&About"), "About");
     connect(aboutCreatorAction, SIGNAL(triggered()), this, SLOT(slotShowAboutCreatorBox()));
 
@@ -539,7 +522,7 @@ void MainWindow::createMenus() {
         return;
 
     fileMenu = menuBar->addMenu(tr("&File"));
-    fileMenu->addActions(QList<QAction*>() << openEditorAction << newTxtAction << newFolderAction <<
+    fileMenu->addActions(QList<QAction*>() << openSpreadsheetAction << openEditorAction << newTxtAction << newFolderAction <<
                          deleteAction << parametersAction);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAction);

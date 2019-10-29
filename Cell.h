@@ -1,11 +1,26 @@
-#ifndef CELL_H
-#define CELL_H
+#pragma once
 
+#include <QTableWidgetItem>
 
-class Cell
-{
+class Cell : public QTableWidgetItem {
 public:
     Cell();
-};
 
-#endif // CELL_H
+    QTableWidgetItem *clone() const;
+    void setData(int role, const QVariant &value);
+    QVariant data(int role) const;
+    void setFormula(const QString &formula);
+    QString formula() const;
+    void setDirty();
+
+private:
+
+    const QVariant Invalid;
+    QVariant value() const;
+    QVariant evalExpression(const QString &str, int &pos) const;
+    QVariant evalTerm(const QString &str, int &pos) const;
+    QVariant evalFactor(const QString &str, int &pos) const;
+
+    mutable QVariant cachedValue;
+    mutable bool cacheIsDirty;
+};

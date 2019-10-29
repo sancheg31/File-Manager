@@ -10,33 +10,27 @@ static inline QString fileNameOfItem(const QTableWidgetItem *item) {
     return item->data(absoluteFileNameRole).toString();
 }
 
-SearchPanel::SearchPanel(QWidget *parent) : QWidget(parent), settings(new QSettings()) {
+SearchPanel::SearchPanel(QWidget *parent) : QWidget(parent),
+    regexCheckBox(new QCheckBox("Regular expressions")), caseCheckBox(new QCheckBox("Case Sensivity")),
+    wholeWordCheckBox(new QCheckBox("Whole Words")), filesFoundLabel(new QLabel()), fileComboBox(createComboBox(tr("*"))),
+    textComboBox(createComboBox()), directoryComboBox(createComboBox(QDir::toNativeSeparators("D:/")))
+{
 
     setWindowTitle(tr("Search Panel"));
-    QPushButton *browseButton = new QPushButton(tr("&Browse..."), this);
+    QPushButton* browseButton = new QPushButton(tr("&Browse..."), this);
     connect(browseButton, SIGNAL(clicked()), this, SLOT(browse()));
     findButton = new QPushButton(tr("&Find"), this);
+    stopButton = new QPushButton(tr("Stop"), this);
+    stopButton->setEnabled(false);
     connect(findButton, SIGNAL(clicked()), this, SLOT(startFind()));
+    connect(stopButton, SIGNAL(clicked()), this, SLOT(slotStopButtonClicked()));
 
-    fileComboBox = createComboBox(tr("*"));
     connect(fileComboBox->lineEdit(), SIGNAL(returnPressed()), this, SLOT(animateFindClick()));
-    textComboBox = createComboBox();
     connect(textComboBox->lineEdit(), SIGNAL(returnPressed()), this, SLOT(animateFindClick()));
-    directoryComboBox = createComboBox(QDir::toNativeSeparators("D:/"));
     connect(directoryComboBox->lineEdit(), SIGNAL(returnPressed()), this, SLOT(animateFindClick()));
 
-    regexCheckBox = new QCheckBox("Regular expressions");
-    regexCheckBox->setChecked(false);
-
-    caseCheckBox = new QCheckBox("Case Sensivity");
-    caseCheckBox->setChecked(false);
-
-    wholeWordCheckBox = new QCheckBox("Whole Words");
-    wholeWordCheckBox->setChecked(false);
-    filesFoundLabel = new QLabel;
-
     createFilesTable();
-    restoreState();
+    settings = restoreState();
 
     QGridLayout *mainLayout1 = new QGridLayout;
     mainLayout1->addWidget(new QLabel(tr("Named:")), 0, 0, 1, 1);
@@ -57,6 +51,7 @@ SearchPanel::SearchPanel(QWidget *parent) : QWidget(parent), settings(new QSetti
     QGridLayout *mainLayout2 = new QGridLayout;
     mainLayout2->addWidget(filesTable, 4, 0, 2, 6);
     mainLayout2->addWidget(filesFoundLabel, 6, 0, 1, 3);
+    mainLayout2->addWidget(stopButton, 6, 4, 1, 1);
     mainLayout2->addWidget(findButton, 6, 5, 1, 1);
 
     QVBoxLayout * mainLayout = new QVBoxLayout(this);
@@ -80,7 +75,7 @@ void SearchPanel::openFile(const QString &fileName) {
     }
 }
 
-void SearchPanel::saveState() {
+void SearchPanel::saveState(QSettings* settings) const {
     settings->setValue("Geometry", saveGeometry());
     settings->setValue("RegexCheckBox", regexCheckBox->isChecked());
     settings->setValue("WholeWordCheckBox", wholeWordCheckBox->isChecked());
@@ -91,7 +86,8 @@ void SearchPanel::saveState() {
 
 }
 
-void SearchPanel::restoreState() {
+QSettings* SearchPanel::restoreState() {
+    QSettings* settings = new QSettings();
     restoreGeometry(settings->value("Geometry").toByteArray());
     regexCheckBox->setChecked(settings->value("regexCheckBox").toBool());
     wholeWordCheckBox->setChecked(settings->value("WholeWordCheckBox").toBool());
@@ -99,12 +95,20 @@ void SearchPanel::restoreState() {
     directoryComboBox->setCurrentText(settings->value("DirectoryComboBox").toString());
     fileComboBox->setCurrentText(settings->value("FileComboBox").toString());
     textComboBox->setCurrentText(settings->value("TextComboBox").toString());
-
+    return settings;
 }
 
 void SearchPanel::closeEvent(QCloseEvent* event) {
-    saveState();
+    saveState(settings);
     QWidget::closeEvent(event);
+}
+
+void SearchPanel::slotShow() {
+    show();
+}
+
+void SearchPanel::slotStopButtonClicked() {
+    stopIsClicked = true;
 }
 
 void SearchPanel::browse() {
@@ -124,9 +128,12 @@ static void updateComboBox(QComboBox *comboBox) {
 
 void SearchPanel::startFind() {
     findButton->setEnabled(false);
-    filesFoundLabel->setText("");
+    stopButton->setEnabled(true);
+    stopIsClicked = false;
+    filesFoundLabel->setText("Processing...");
     QFuture<void> future = QtConcurrent::run(this, &SearchPanel::find);
     findButton->setEnabled(true);
+    stopButton->setEnabled(false);
 }
 
 void SearchPanel::find() {
@@ -134,11 +141,13 @@ void SearchPanel::find() {
     filesTable->setRowCount(0);
 
     QString fileName = fileComboBox->currentText();
+    if (fileName.isEmpty() || fileName == tr(""))  {
+        return;
+    }
     QString text = textComboBox->currentText();
     QString path = QDir::cleanPath(directoryComboBox->currentText());
     currentDir = QDir(path);
 
-    qDebug() << fileName << " " << text;
     updateComboBox(fileComboBox);
     updateComboBox(textComboBox);
     updateComboBox(directoryComboBox);
@@ -148,7 +157,7 @@ void SearchPanel::find() {
         filter << fileName;
     QDirIterator it(path, QDir::AllEntries | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
     QStringList files;
-    while (it.hasNext()) {
+    while (it.hasNext() && !stopIsClicked) {
         QString str = it.next();
         if (equalWithCheckBoxes(str, fileName))
             files << str;
@@ -230,7 +239,8 @@ void SearchPanel::showFiles(const QStringList &paths) {
         filesTable->setItem(row, 1, sizeItem);
         ++row;
     }
-    filesFoundLabel->setText(tr("%n file(s) found (Double click on a file to open it)", nullptr, paths.size()));
+    filesFoundLabel->setText(QString("%n file(s) found").arg(paths.size()) +
+                             (paths.size() > 0 ? " (Double click on a file to open it)" : ""));
     filesFoundLabel->setWordWrap(true);
 }
 

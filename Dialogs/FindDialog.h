@@ -1,5 +1,4 @@
-#ifndef FINDDIALOG_H
-#define FINDDIALOG_H
+#pragma once
 
 #include <QDialog>
 
@@ -13,7 +12,7 @@ class FindDialog : public QDialog
     Q_OBJECT
 
 public:
-    FindDialog(QWidget *parent = 0);
+    FindDialog(QWidget * = nullptr);
 
 signals:
     void findNext(const QString &str, Qt::CaseSensitivity cs);
@@ -31,5 +30,3 @@ private:
     QPushButton *findButton;
     QPushButton *closeButton;
 };
-
-#endif

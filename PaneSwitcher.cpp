@@ -1,28 +1,25 @@
 #include "PaneSwitcher.h"
 
 
-PaneSwitcher::PaneSwitcher(Pane* l, Pane* r, QObject* obj): QObject(obj), lPane(l), rPane(r) {
-    actPane = lPane;
+PaneSwitcher::PaneSwitcher(Pane* l, Pane* r, QObject* obj): QObject(obj), lPane(l), rPane(r), actPane(nullptr) {
+
 }
 
-Pane* PaneSwitcher::activePane() const {
-    return actPane;
-}
+Pane* PaneSwitcher::getPane(PaneType type) const {
 
-Pane* PaneSwitcher::inactivePane() const {
-    return (actPane == rPane) ? lPane : rPane;
+    switch(type) {
+    case PaneType::LeftPane:
+        return lPane;
+    case PaneType::RightPane:
+        return rPane;
+    case PaneType::ActivePane:
+        return actPane;
+    }
+    return nullptr;
 }
 
 bool PaneSwitcher::isActive(Pane* p) const {
     return (actPane == p) ? true : false;
-}
-
-Pane* PaneSwitcher::rightPane() const {
-    return rPane;
-}
-
-Pane* PaneSwitcher::leftPane() const {
-    return lPane;
 }
 
 void PaneSwitcher::setActivePane(Pane* p) {
@@ -36,15 +33,15 @@ void PaneSwitcher::switchActivePane() {
 }
 
 void PaneSwitcher::slotToggleToDetailView() {
-    activePane()->setViewTo(Pane::ViewMode::TreeViewMode);
+    actPane->setViewTo(Pane::ViewMode::TreeViewMode);
 }
 
 void PaneSwitcher::slotToggleToIconView() {
-    activePane()->setViewTo(Pane::ViewMode::ListViewMode);
+    actPane->setViewTo(Pane::ViewMode::ListViewMode);
 }
 
 void PaneSwitcher::slotToggleToTileView() {
-    activePane()->setViewTo(Pane::ViewMode::TableViewMode);
+    actPane->setViewTo(Pane::ViewMode::TableViewMode);
 }
 
 

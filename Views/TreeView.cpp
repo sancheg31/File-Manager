@@ -1,4 +1,4 @@
-#include "TreeView.h"
+#include "Views/TreeView.h"
 
 TreeView::TreeView(QWidget* parent): QTreeView(parent) {
     setDefaultViewSettings(this);

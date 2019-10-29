@@ -3,9 +3,13 @@
 #include <QtWidgets>
 
 #include "Action.h"
+#include "Views/ProxyTreeView.h"
 #include "TextEditor.h"
 #include "PaneSwitcher.h"
 #include "SearchPanel.h"
+#include "SpreadsheetWindow.h"
+
+#include "ISettings.h"
 
 class Pane;
 class QSortFilterProxyModel;
@@ -13,7 +17,7 @@ class Properties;
 class PreviewPane;
 class PathValidator;
 
-class MainWindow : public QMainWindow {
+class MainWindow : public QMainWindow, private ISettings {
     Q_OBJECT
 public:
 
@@ -22,7 +26,7 @@ public:
     QFileSystemModel* fileSystemModel;
     QSortFilterProxyModel* fileSystemProxyModel;
 
-    QTreeView* directoryTreeView;
+    ProxyTreeView* directoryTreeView;
 
     QMenu* contextSelectionMenu;        //Menu when selection exists
     QMenu* contextDirectoryMenu;        //Menu when no selection
@@ -34,6 +38,8 @@ public:
     PaneSwitcher * paneSwitcher;
 
     TextEditor* manualEditor;
+
+    SpreadsheetWindow* spreadsheet;
 
     void setActivePane(Pane* pane);
 
@@ -80,10 +86,6 @@ private slots:
 protected:
     void closeEvent(QCloseEvent* event) override;
     void keyPressEvent(QKeyEvent* event) override;
-    void keyReleaseEvent(QKeyEvent* event) override;
-    void mousePressEvent(QMouseEvent * event) override;
-    void mouseReleaseEvent(QMouseEvent * event) override;
-
 
 private:
 
@@ -102,15 +104,15 @@ private:
     void createContextEmptyMenu();
     void createContextDirectoryMenu();
 
-    void saveState();
-    void restoreState();
+    virtual void saveState(QSettings*) const override;
+    virtual QSettings* restoreState() override;
 
     //for copy purposes only
 
     QModelIndexList selectionList;
     QString sourceCopyPath;
     void copyFolders(const QModelIndexList& list, const QString& dst);
-    void copyPath(QString src, QString dst);
+    void copyPath(const QString& src, const QString& dst);
 
     //Menus
 
@@ -126,6 +128,7 @@ private:
     QActionGroup* viewActionGroup;
 
     Action* openEditorAction;
+    Action* openSpreadsheetAction;
     Action* openAction;
     Action* newTxtAction;
     Action* newFolderAction;
@@ -145,7 +148,6 @@ private:
 
     QSplitter* splitter;
     QSettings* settings;
-
 
 };
 

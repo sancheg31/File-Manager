@@ -6,7 +6,6 @@
 class DefaultViewSettings {
 protected:
     virtual QAbstractItemView* setDefaultViewSettings(QAbstractItemView*) const;
-    virtual ~DefaultViewSettings();
 };
 
 #endif // DEFAULTVIEWSETTINGS_H

@@ -6,23 +6,19 @@
 #include <QGridLayout>
 
 
-#include "finddialog.h"
+#include "FindDialog.h"
 
-FindDialog::FindDialog(QWidget *parent)
-    : QDialog(parent)
+FindDialog::FindDialog(QWidget *parent) : QDialog(parent), label(new QLabel(tr("Find &what:"))), lineEdit(new QLineEdit),
+findButton(new QPushButton(tr("&Find"))), closeButton(new QPushButton(tr("Close"))),
+  caseCheckBox(new QCheckBox(tr("Match &case"))), backwardCheckBox(new QCheckBox(tr("Search &backward")))
+
+
 {
-    label = new QLabel(tr("Find &what:"));
-    lineEdit = new QLineEdit;
+
     label->setBuddy(lineEdit);
 
-    caseCheckBox = new QCheckBox(tr("Match &case"));
-    backwardCheckBox = new QCheckBox(tr("Search &backward"));
-
-    findButton = new QPushButton(tr("&Find"));
     findButton->setDefault(true);
     findButton->setEnabled(false);
-
-    closeButton = new QPushButton(tr("Close"));
 
     connect(lineEdit, SIGNAL(textChanged(const QString &)),
             this, SLOT(enableFindButton(const QString &)));
@@ -52,14 +48,12 @@ FindDialog::FindDialog(QWidget *parent)
 
     setWindowTitle(tr("Find"));
     setFixedHeight(sizeHint().height());
+
 }
 
-void FindDialog::findClicked()
-{
+void FindDialog::findClicked() {
     QString text = lineEdit->text();
-    Qt::CaseSensitivity cs =
-            caseCheckBox->isChecked() ? Qt::CaseSensitive
-                                      : Qt::CaseInsensitive;
+    Qt::CaseSensitivity cs = caseCheckBox->isChecked() ? Qt::CaseSensitive : Qt::CaseInsensitive;
     if (backwardCheckBox->isChecked()) {
         emit findPrevious(text, cs);
     } else {
@@ -67,7 +61,6 @@ void FindDialog::findClicked()
     }
 }
 
-void FindDialog::enableFindButton(const QString &text)
-{
+void FindDialog::enableFindButton(const QString &text) {
     findButton->setEnabled(!text.isEmpty());
 }

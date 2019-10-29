@@ -1,11 +1,9 @@
-#ifndef DIRECTORYTREEVIEW_H
-#define DIRECTORYTREEVIEW_H
+#pragma once
 
+#include <QTreeView>
+#include <QSortFilterProxyModel>
 
-class DirectoryTreeView
-{
+class ProxyTreeView: public QTreeView {
 public:
-    DirectoryTreeView();
+    ProxyTreeView(QWidget* = nullptr);
 };
-
-#endif // DIRECTORYTREEVIEW_H

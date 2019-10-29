@@ -2,9 +2,9 @@
 
 #include <QtWidgets>
 
-#include "ListView.h"
-#include "TableView.h"
-#include "TreeView.h"
+#include "Views/ListView.h"
+#include "Views/TableView.h"
+#include "Views/TreeView.h"
 
 class MainWindow;
 
