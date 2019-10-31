@@ -116,11 +116,14 @@ void TextEditorWindow::slotSelectAll() {
 }
 
 void TextEditorWindow::slotFont() {
-    textEditor->font();
+    bool ok = false;
+    QFont font = QFontDialog::getFont(&ok, textEditor->activeDocument()->font(), nullptr, tr("Select Font"));
+    if (ok)
+        textEditor->setFont(font);
 }
 
 void TextEditorWindow::slotDateAndTime() {
-    textEditor->dateAndTime();
+    textEditor->setDateAndTime(QDateTime::currentDateTime());
 }
 
 void TextEditorWindow::slotWindows() {

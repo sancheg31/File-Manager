@@ -15,6 +15,5 @@ GoToCellDialog::GoToCellDialog(QWidget *parent) : QDialog(parent) {
 }
 
 void GoToCellDialog::on_lineEdit_textChanged() {
-    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(
-            lineEdit->hasAcceptableInput());
+    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(lineEdit->hasAcceptableInput());
 }

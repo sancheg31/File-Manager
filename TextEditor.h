@@ -12,8 +12,6 @@ class TextEditor: public QObject, public ISettings {
 Q_OBJECT
 public:
     TextEditor(QObject * obj = nullptr);
-    TextEditor(const QList<QFileInfo>&, QObject * wgt = nullptr);
-    TextEditor(const QStringList&, QObject * wgt = nullptr);
 
     IDocument* activeDocument() const;
     IDocument* document(const QString&) const;
@@ -21,8 +19,8 @@ public:
     const DocumentContainer& getDocuments() const;
     bool isNewFile() const;
 
-    virtual QSettings* restoreState() override;
-    virtual void saveState(QSettings*) const override;
+    QSettings* restoreState();
+    void saveState(QSettings*) const;
 
 public slots:
     void loadFile(const QFileInfo&);
@@ -34,8 +32,8 @@ public slots:
     void paste();
     void del();
     void selectAll();
-    void dateAndTime();
-    void font();
+    void setDateAndTime(QDateTime);
+    void setFont(QFont);
 
     bool newDoc();
     bool load(const QString&);

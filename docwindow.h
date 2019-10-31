@@ -12,6 +12,7 @@ public:
     DocWindow(QWidget * = nullptr);
 
     QString fileName() const;
+    void setFileName(const QString&);
 
     void load(const QString&);
     void save();

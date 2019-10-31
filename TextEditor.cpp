@@ -6,15 +6,6 @@
 
 TextEditor::TextEditor(QObject * obj): QObject(obj), actDoc(nullptr) { }
 
-TextEditor::TextEditor(const QStringList& list, QObject * obj): QObject(obj), actDoc(nullptr) {
-    loadFiles(list);
-}
-
-TextEditor::TextEditor(const QList<QFileInfo>& list, QObject * obj): QObject(obj), actDoc(nullptr) {
-    loadFiles(list);
-}
-
-
 const DocumentContainer& TextEditor::getDocuments() const {
     return documents;
 }
@@ -39,9 +30,7 @@ void TextEditor::loadFile(const QString& fileName, const QString& text) {
 }
 
 bool TextEditor::setActiveDocument(IDocument* doc) {
-
     if (!doc || documents.contains(doc->fileName())) {
-        qDebug() << "TextEditor::setActiveDocument(): new active document have set: " << doc;
         actDoc = doc;
         return true;
     } else {
@@ -54,7 +43,6 @@ IDocument* TextEditor::activeDocument() const {
 }
 
 IDocument* TextEditor::document(const QString& title) const {
-    qDebug() << "TextEditor::document(): document contains str: " << title << " " << documents.contains(title);
     if (documents.contains(title))
         return documents.value(title);
     else
@@ -119,15 +107,12 @@ void TextEditor::selectAll() {
     actDoc->selectAll();
 }
 
-void TextEditor::dateAndTime() {
-    actDoc->insertPlainText(QDateTime::currentDateTime().toString(Qt::SystemLocaleShortDate));
+void TextEditor::setDateAndTime(QDateTime dateTime) {
+    actDoc->insertPlainText(dateTime.toString(Qt::SystemLocaleShortDate));
 }
 
-void TextEditor::font() {
-    bool ok = false;
-    QFont font = QFontDialog::getFont(&ok, actDoc->font(), nullptr, tr("Select Font"));
-    if (ok)
-        actDoc->setFont(font);
+void TextEditor::setFont(QFont font) {
+    actDoc->setFont(font);
 }
 
 //private methods
@@ -184,7 +169,11 @@ QSettings* TextEditor::restoreState() {
             QString plainText(settings->value(QString("FileInfo%1").arg(i)).toString());
             loadFile(fileName, plainText);
         }
+        //QFont font;
+        //font.fromString(settings->value(QString("Font%1").arg(i)).toString());
+        //activeDocument()->setFont(font);
     }
+
     QString actDocName = settings->value("ActiveDocument").toString();
     actDoc = (actDocName == "") ? nullptr : documents.value(actDocName);
     return settings;
@@ -196,9 +185,11 @@ void TextEditor::saveState(QSettings* settings) const {
 
     int ind = 0;
     for(auto it = documents.begin(); it != documents.end(); ++it) {
-        settings->setValue(QString("File%1").arg(ind++), it.key());
+        settings->setValue(QString("File%1").arg(ind), it.key());
         if (it.key().contains("new ") && !it.key().endsWith(".txt")) {
             settings->setValue(QString("FileInfo%1").arg(ind), it.value()->document()->toRawText());
+            //settings->setValue(QString("Font%1").arg(ind), activeDocument()->font().toString());
         }
+        ++ind;
     }
 }

@@ -7,8 +7,15 @@ DocWindow::DocWindow(QWidget * wgt): IDocument(wgt) {
     createStandardContextMenu();
 }
 
+
 QString DocWindow::fileName() const {
     return fName == "" ? windowTitle() : fName;
+}
+
+void DocWindow::setFileName(const QString & str) {
+    emit fileNameChanged(str, fileName());
+    setWindowTitle(str);
+    fName = str;
 }
 
 void DocWindow::closeEvent(QCloseEvent * event) {
@@ -24,9 +31,7 @@ void DocWindow::load(const QString& str) {
          QTextStream stream(&file);
          setPlainText(stream.readAll());
          file.close();
-         emit fileNameChanged(str, fileName());
-         setWindowTitle(str);
-         fName = str;
+         setFileName(str);
     }
 }
 
@@ -40,9 +45,7 @@ void DocWindow::save() {
 }
 
 void DocWindow::saveAs(const QString& str) {
-    emit fileNameChanged(str, fileName());
-    setWindowTitle(str);
-    fName = str;
+    setFileName(str);
     save();
 }
 

@@ -20,4 +20,5 @@ public slots:
 signals:
     void containerIsEmpty(bool);
     void documentRemoved(IDocument*);
+
 };

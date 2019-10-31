@@ -5,6 +5,8 @@
 
 #include "ui_gotocelldialog.h"
 
+class QRegExpValidator;
+
 class GoToCellDialog : public QDialog, public Ui::GoToCellDialog {
     Q_OBJECT
 public:

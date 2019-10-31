@@ -37,7 +37,6 @@ public:
     PaneSwitcher * paneSwitcher;
 
     TextEditorWindow* manualEditor;
-
     SpreadsheetWindow* spreadsheet;
 
     void setActivePane(Pane* pane);
