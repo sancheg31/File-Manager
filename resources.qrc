@@ -1,36 +1,38 @@
 <RCC>
     <qresource prefix="/">
-        <file>Images/About.ico</file>
-        <file>Images/App.ico</file>
-        <file>Images/Copy.png</file>
+        <file>Images/Notepad.png</file>
+        <file>Images/Delete.png</file>
         <file>Images/Cut.png</file>
-        <file>Images/Delete.ico</file>
-        <file>Images/DetailView.ico</file>
+        <file>Images/Copy.png</file>
+        <file>Images/App.png</file>
+        <file>Images/SaveAs.png</file>
+        <file>Images/Save.png</file>
+        <file>Images/Undo.png</file>
+        <file>Images/NewFolder.png</file>
+        <file>Images/Cascade.png</file>
+        <file>Images/Tile.png</file>
+        <file>Images/Font.png</file>
         <file>Images/Exit.png</file>
-        <file>Images/IconView.ico</file>
-        <file>Images/NewFile.ico</file>
-        <file>Images/NewFolder.ico</file>
-        <file>Images/Notepad.ico</file>
-        <file>Images/Open.ico</file>
+        <file>Images/NewFile.png</file>
+        <file>Images/About.png</file>
         <file>Images/Paste.png</file>
-        <file>Images/Preferences.ico</file>
-        <file>Images/Properties.ico</file>
-        <file>Images/Save.ico</file>
-        <file>Images/SaveAll.ico</file>
-        <file>Images/SaveAs.ico</file>
-        <file>Images/Thumbs.db</file>
-        <file>Images/DateAndTime.ico</file>
-        <file>Images/SelectAll.ico</file>
-        <file>Images/ForwardTo.ico</file>
-        <file>Images/Replace.ico</file>
-        <file>Images/FindPrevious.ico</file>
-        <file>Images/FindNext.ico</file>
-        <file>Images/Find.ico</file>
-        <file>Images/Undo.ico</file>
-        <file>Images/Font.ico</file>
-        <file>Images/Tile.ico</file>
-        <file>Images/Cascade.ico</file>
-        <file>Images/TileView.png</file>
-        <file>Images/OpenFile.ico</file>
+        <file>Images/Open.png</file>
+        <file>Images/Spreadsheet.png</file>
+        <file>Images/Select.png</file>
+        <file>Images/Find.png</file>
+        <file>Images/Parameters.png</file>
+        <file>Images/SaveAll.png</file>
+        <file>Images/Sort.png</file>
+        <file>Images/Hidden.png</file>
+        <file>Images/SelectAll.png</file>
+        <file>Images/Grid.png</file>
+        <file>Images/SelectRow.png</file>
+        <file>Images/SelectColumn.png</file>
+        <file>Images/Recalculate.png</file>
+        <file>Images/DateAndTime.png</file>
+        <file>Images/GoTo.png</file>
+        <file>Images/FindNext.png</file>
+        <file>Images/Replace.png</file>
+        <file>Images/FindPrevious.png</file>
     </qresource>
 </RCC>

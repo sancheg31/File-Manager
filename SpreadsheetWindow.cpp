@@ -10,13 +10,14 @@
 #include "Dialogs/SortDialog.h"
 
 
-SpreadsheetWindow::SpreadsheetWindow(QWidget *parent) : QMainWindow(parent) {
+SpreadsheetWindow::SpreadsheetWindow(QWidget *parent) : QMainWindow(parent), sheet(new Spreadsheet)
+{
+    setWindowIcon(QIcon(":/Images/Spreadsheet.png"));
 
     QStringList headers;
     for (char i = 'A'; i != 'Z'; ++i)
         headers << QString(i);
 
-    sheet = new Spreadsheet;
    // tbl = new QTableWidget;
     sheet->setColumnCount(26);
     sheet->setRowCount(30);
@@ -222,6 +223,7 @@ QString SpreadsheetWindow::strippedName(const QString &fullFileName){
 }
 
 void SpreadsheetWindow::updateRecentFileActions() {
+
     QMutableStringListIterator i(recentFile);
     while (i.hasNext()) {
         if (!QFile::exists(i.next()))
@@ -244,28 +246,23 @@ void SpreadsheetWindow::updateRecentFileActions() {
 
 void SpreadsheetWindow::createActions(){
 
-    newAction = new QAction(tr("&New"), this);
-    newAction->setIcon(QIcon(":/Images/NewFile.ico"));
+    newAction = new QAction(QIcon(":/Images/NewFile.png"), tr("&New"), this);
     newAction->setShortcut(QKeySequence::New);
     newAction->setStatusTip("Create Spreadsheet File");
     connect(newAction, SIGNAL(triggered()), this, SLOT(slotNewFile()));
 
-
-    openAction = new QAction(tr("&Open"), this);
-    openAction->setIcon(QIcon(":/Images/Open.ico"));
+    openAction = new QAction(QIcon(":/Images/Open.png"), tr("&Open"), this);
     openAction->setShortcut(QKeySequence::Open);
     openAction->setStatusTip("Open Spreadsheet File");
     connect(openAction, SIGNAL(triggered()), this, SLOT(slotOpen()));
 
-    saveAction = new QAction(tr("&Save"), this);
-    saveAction->setIcon(QIcon(":/Images/Save.ico"));
+    saveAction = new QAction(QIcon(":/Images/Save.png"), tr("&Save"), this);
     saveAction->setShortcut(QKeySequence::Save);
     saveAction->setStatusTip("Save Spreadsheet File");
     connect(saveAction, SIGNAL(triggered()), this, SLOT(slotSave()));
 
 
-    saveAsAction = new QAction(tr("&Save As..."), this);
-    saveAsAction->setIcon(QIcon(":/Images/SaveAs.ico"));
+    saveAsAction = new QAction(QIcon(":/Images/SaveAs.png"), tr("&Save As..."), this);
     saveAsAction->setShortcut(QKeySequence::SaveAs);
     saveAsAction->setStatusTip("Save Spreadsheet File As");
     connect(saveAsAction, SIGNAL(triggered()), this, SLOT(slotSaveAs()));
@@ -276,87 +273,78 @@ void SpreadsheetWindow::createActions(){
         connect(recentFileActions[i], SIGNAL(triggered()), this, SLOT(slotOpenRecentFile()));
     }
 
-    exitAction = new QAction(tr("E&xit"), this);
-    exitAction->setIcon(QIcon(":/Images/Exit.png"));
+    exitAction = new QAction(QIcon(":/Images/Exit.png"), tr("E&xit"), this);
     exitAction->setShortcut(QKeySequence::Quit);
     exitAction->setStatusTip("Exit the application");
     connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
-    cutAction = new QAction(tr("Cu&t"), this);
-    cutAction->setIcon(QIcon(":/Images/Cut.png"));
+    cutAction = new QAction(QIcon(":/Images/Cut.png"), tr("Cu&t"), this);
     cutAction->setShortcut(QKeySequence::Cut);
     cutAction->setStatusTip("Cut");
     connect(cutAction, SIGNAL(triggered()), sheet, SLOT(cut()));
 
 
-    copyAction = new QAction(tr("&Copy"), this);
-    copyAction->setIcon(QIcon(":/Images/Copy.png"));
+    copyAction = new QAction(QIcon(":/Images/Copy.png"), tr("&Copy"), this);
     copyAction->setShortcut(QKeySequence::Copy);
     copyAction->setStatusTip("Copy");
     connect(copyAction, SIGNAL(triggered()), sheet, SLOT(copy()));
 
-    pasteAction = new QAction(tr("&Paste"), this);
-    pasteAction->setIcon(QIcon(":/Images/Paste.png"));
+    pasteAction = new QAction(QIcon(":/Images/Paste.png"), tr("&Paste"), this);
     pasteAction->setShortcut(QKeySequence::Paste);
     pasteAction->setStatusTip("Paste");
     connect(pasteAction, SIGNAL(triggered()), sheet, SLOT(paste()));
 
-    deleteAction = new QAction(tr("Delete"), this);
-    deleteAction->setIcon(QIcon(":/Images/Delete.ico"));
+    deleteAction = new QAction(QIcon(":/Images/Delete.png"), tr("Delete"), this);
     deleteAction->setShortcut(QKeySequence::Delete);
     deleteAction->setStatusTip("Delete");
     connect(deleteAction, SIGNAL(triggered()), sheet, SLOT(del()));
 
-    selectAction = new QAction(tr("Select"), this);
+    selectAction = new QAction(QIcon(":/Images/Select.png"), tr("Select"), this);
     selectAction->setStatusTip("Select Cells");
 
-    rowAction = new QAction(tr("&Row"), this);
+    rowAction = new QAction(QIcon(":/Images/SelectRow.png"), tr("&Row"), this);
     connect(rowAction, SIGNAL(triggered()), sheet, SLOT(selectCurrentRow()));
-    columnAction = new QAction(tr("&Column"), this);
+
+    columnAction = new QAction(QIcon(":/Images/SelectColumn.png"), tr("&Column"), this);
     connect(columnAction, SIGNAL(triggered()), sheet, SLOT(selectCurrentColumn()));
-    allAction = new QAction(tr("&All"), this);
+
+    allAction = new QAction(QIcon(":/Images/SelectAll.png"), tr("&All"), this);
     allAction->setShortcut(QKeySequence::SelectAll);
     allAction->setStatusTip(tr("Select All Cells"));
     connect(allAction, SIGNAL(triggered()), sheet, SLOT(selectAll()));
 
-    findAction = new QAction(tr("&Find"), this);
-    findAction->setIcon(QIcon(":/Images/Find.ico"));
+    findAction = new QAction(QIcon(":/Images/Find.png"), tr("&Find"), this);
     findAction->setShortcut(QKeySequence::Find);
     findAction->setStatusTip("Find Cell");
     connect(findAction, SIGNAL(triggered()), this, SLOT(slotFind()));
 
-    goToCellAction = new QAction(tr("&Go to cell..."), this);
-    goToCellAction->setIcon(QIcon(":/Images/ForwardTo.ico"));
+    goToCellAction = new QAction(QIcon(":/Images/GoTo.png"), tr("&Go to cell..."), this);
     goToCellAction->setShortcut(tr("Ctrl+G"));
     goToCellAction->setStatusTip("Go to Cell...");
     connect(goToCellAction, SIGNAL(triggered()), this, SLOT(slotGoToCell()));
 
-    recalculateAction = new QAction(tr("&Recalculate"), this);
+    recalculateAction = new QAction(QIcon(":/Images/Recalculate.png"), tr("&Recalculate"), this);
     recalculateAction->setShortcut(tr("F9"));
     connect(recalculateAction, SIGNAL(triggered()), sheet, SLOT(recalculate()));
 
-    sortAction = new QAction(tr("&Sort..."), this);
+    sortAction = new QAction(QIcon(":/Images/Sort.png"), tr("&Sort..."), this);
     sortAction->setStatusTip("Invoke Sort Panel");
     connect(sortAction, SIGNAL(triggered()), this, SLOT(slotSort()));
 
-    showGridAction = new QAction(tr("&Show Grid"), this);
+    showGridAction = new QAction(QIcon(":/Images/Grid.png"), tr("&Show Grid"), this);
     showGridAction->setCheckable(true);
     showGridAction->setChecked(sheet->showGrid());
     showGridAction->setStatusTip(tr("Show or Hide Grid"));
     connect(showGridAction, SIGNAL(toggled(bool)), sheet, SLOT(setShowGrid(bool)));
 
-    autoRecalculateAction = new QAction(tr("&Auto-Recalculate"), this);
+    autoRecalculateAction = new QAction(QIcon(":/Images/Recalculate.png"), tr("&Auto-Recalculate"), this);
     autoRecalculateAction->setCheckable(true);
     autoRecalculateAction->setChecked(sheet->autoRecalculate());
     autoRecalculateAction->setStatusTip("Auto Recalculation Data in Table");
     connect(autoRecalculateAction, SIGNAL(toggled(bool)), sheet, SLOT(setAutoRecalculate(bool)));
 
-    aboutAction = new QAction(QIcon(":/Images/About.ico"), tr("&About"), this);
+    aboutAction = new QAction(QIcon(":/Images/About.png"), tr("&About"), this);
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(slotAbout()));
-
-    aboutQtAction = new QAction(tr("&About &Qt"), this);
-    aboutQtAction->setStatusTip(tr("Qt About Box"));
-    connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
 }
 
@@ -387,7 +375,7 @@ void SpreadsheetWindow::createMenus(){
     menuBar()->addSeparator();
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
-    helpMenu->addActions(QList<QAction*>() << aboutAction << aboutQtAction);
+    helpMenu->addActions(QList<QAction*>() << aboutAction);
 
 }
 

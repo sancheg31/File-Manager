@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
     splash->showMessage(QObject::tr("Setting up the main window..."), Qt::AlignRight | Qt::AlignTop , Qt::white);
 
     MainWindow mainWindow;
-    mainWindow.setWindowIcon(QIcon(":/Images/App.ico"));
+    mainWindow.setWindowIcon(QIcon(":/Images/App.png"));
     mainWindow.show();
 
     splash->finish(&mainWindow);

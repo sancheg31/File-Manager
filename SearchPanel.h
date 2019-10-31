@@ -4,9 +4,9 @@
 #include <QDir>
 
 #include "ISettings.h"
-#include "MainWindow.h"
 
 class QComboBox;
+class QCheckBox;
 class QLabel;
 class QPushButton;
 class QTableWidget;

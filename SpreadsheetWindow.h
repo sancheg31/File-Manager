@@ -51,6 +51,7 @@ private:
 
     static const int MaxRecentFiles = 5;
     Ui::SpreadsheetWindow *ui;
+
     void createActions();
     void createMenus();
     void createContextMenu();
@@ -117,6 +118,6 @@ private:
     QAction *autoRecalculateAction;
 
     QAction *aboutAction;
-    QAction *aboutQtAction;
+
 };
 

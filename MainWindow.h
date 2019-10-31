@@ -4,10 +4,10 @@
 
 #include "Action.h"
 #include "Views/ProxyTreeView.h"
-#include "TextEditor.h"
 #include "PaneSwitcher.h"
 #include "SearchPanel.h"
 #include "SpreadsheetWindow.h"
+#include "TextEditorWindow.h"
 
 #include "ISettings.h"
 
@@ -20,7 +20,6 @@ class PathValidator;
 class MainWindow : public QMainWindow, private ISettings {
     Q_OBJECT
 public:
-
     MainWindow(QWidget* parent = nullptr);
 
     QFileSystemModel* fileSystemModel;
@@ -37,7 +36,7 @@ public:
     SearchPanel* searchPanel;
     PaneSwitcher * paneSwitcher;
 
-    TextEditor* manualEditor;
+    TextEditorWindow* manualEditor;
 
     SpreadsheetWindow* spreadsheet;
 

@@ -4,26 +4,29 @@
 #include <QList>
 #include <QFileInfo>
 
-class DocWindow: public QTextEdit {
+#include "IDocument.h"
+
+class DocWindow: public IDocument {
 Q_OBJECT
 public:
     DocWindow(QWidget * = nullptr);
-    const QString& getFileName() const;
+
+    QString fileName() const;
+
+    void load(const QString&);
+    void save();
+    void saveAs(const QString&);
 
 protected:
     void closeEvent(QCloseEvent*);
 
 private:
-    QString fileName;
+    QString fName;
 
-signals:
-    void close(const QString&);
-    void fileNameChanged(const QString&, const QString&);
-
-public slots:
+protected slots:
     void slotLoad(const QString&);
     void slotSave();
-    void slotSaveAs();
+    void slotSaveAs(const QString&);
 
 };
 

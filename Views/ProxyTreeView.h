@@ -6,4 +6,5 @@
 class ProxyTreeView: public QTreeView {
 public:
     ProxyTreeView(QWidget* = nullptr);
+    void setDefaultSettings();
 };

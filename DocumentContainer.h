@@ -1,11 +1,23 @@
-#ifndef DOCUMENTCONTAINER_H
-#define DOCUMENTCONTAINER_H
+#pragma once
 
+#include <QMap>
+#include <QPair>
+#include <QHash>
 
-class DocumentContainer
-{
+#include "IDocument.h"
+
+class DocumentContainer: public QObject, public QHash<QString, IDocument*> {
+Q_OBJECT
 public:
     DocumentContainer();
-};
 
-#endif // DOCUMENTCONTAINER_H
+    iterator insert(const QString&, IDocument*);
+
+public slots:
+    void slotRemove(const QString&);
+    void slotReplace(const QString&, const QString&);
+
+signals:
+    void containerIsEmpty(bool);
+    void documentRemoved(IDocument*);
+};

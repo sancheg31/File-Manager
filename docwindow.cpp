@@ -2,21 +2,21 @@
 
 #include <QtWidgets>
 
-DocWindow::DocWindow(QWidget * wgt): QTextEdit(wgt) {
-    setWindowIcon(QIcon(":/Images/Notepad.ico"));
+DocWindow::DocWindow(QWidget * wgt): IDocument(wgt) {
+    setWindowIcon(QIcon(":/Images/NewFile.png"));
     createStandardContextMenu();
 }
 
-const QString& DocWindow::getFileName() const {
-    return fileName;
+QString DocWindow::fileName() const {
+    return fName == "" ? windowTitle() : fName;
 }
 
 void DocWindow::closeEvent(QCloseEvent * event) {
-    emit close(windowTitle());
+    emit fileClosed(windowTitle());
     QTextEdit::closeEvent(event);
 }
 
-void DocWindow::slotLoad(const QString& str) {
+void DocWindow::load(const QString& str) {
     if (str.isEmpty())
         return;
     QFile file(str);
@@ -24,37 +24,38 @@ void DocWindow::slotLoad(const QString& str) {
          QTextStream stream(&file);
          setPlainText(stream.readAll());
          file.close();
-
+         emit fileNameChanged(str, fileName());
          setWindowTitle(str);
-         emit fileNameChanged(str, fileName);
-         fileName = str;
+         fName = str;
     }
 }
 
-void DocWindow::slotSave() {
+void DocWindow::save() {
 
-    if (fileName.isEmpty()) {
-        slotSaveAs();
-        return;
-    }
-
-    QFile file(fileName.endsWith(".txt") ? fileName : fileName + tr(".txt"));
+    QFile file(fName.endsWith(".txt") ? fName : fName + tr(".txt"));
     if (file.open(QIODevice::WriteOnly)) {
         QTextStream(&file) << toPlainText();
         file.close();
     }
 }
 
-void DocWindow::slotSaveAs() {
-    QString str = QFileDialog::getSaveFileName(nullptr, tr("Save File"), tr("D:/"), tr("Text Files (*.txt)"));
-    if (!str.isEmpty()) {
-        emit fileNameChanged(str, fileName);
-        setWindowTitle(str);
-        fileName = str;
-        slotSave();
-    }
+void DocWindow::saveAs(const QString& str) {
+    emit fileNameChanged(str, fileName());
+    setWindowTitle(str);
+    fName = str;
+    save();
 }
 
+void DocWindow::slotSave() {
+    save();
+}
+
+void DocWindow::slotSaveAs(const QString& str) {
+    saveAs(str);
+}
+void DocWindow::slotLoad(const QString& str) {
+    load(str);
+}
 
 
 

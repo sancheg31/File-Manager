@@ -8,10 +8,10 @@
 #include "FileSystemModelFilterProxyModel.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), fileSystemModel(new QFileSystemModel()),
-    searchPanel(new SearchPanel()), manualEditor(new TextEditor()), spreadsheet(new SpreadsheetWindow()),
+    searchPanel(new SearchPanel()), manualEditor(new TextEditorWindow()), spreadsheet(new SpreadsheetWindow()),
     menuBar(new QMenuBar()), splitter(new QSplitter())
 {
-    qDebug() << "MainWindow constructor starts";
+
     paneSwitcher = new PaneSwitcher(createPane(), createPane());
     directoryTreeView = new ProxyTreeView(splitter);
     setMenuBar(menuBar);
@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), fileSystemModel(n
     fileSystemProxyModel->setSortCaseSensitivity(Qt::CaseSensitive);
 
     directoryTreeView->setModel(fileSystemProxyModel);
+    directoryTreeView->setDefaultSettings();
     connect(directoryTreeView, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(slotShowContextDirectoryMenu(const QPoint&)));
 
     connect(directoryTreeView->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)),
@@ -46,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), fileSystemModel(n
     settings = restoreState();
     connect(activePane()->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
             this, SLOT(slotActivePaneSelectionChanged(const QItemSelection&, const QItemSelection&)));
-    qDebug() << "MainWindow constructor ends";
+
 }
 
 void MainWindow::clipboardChanged() {
@@ -147,7 +148,8 @@ void MainWindow::slotOpenFile() {
     QFileInfo fileInfo = fileSystemModel->fileInfo(activePane()->selectionModel()->currentIndex());
     if (fileInfo.isFile()) {
         manualEditor->loadFile(fileInfo);
-        manualEditor->slotShow();
+        manualEditor->show();
+        manualEditor->raise();
     }
 }
 
@@ -409,7 +411,7 @@ void MainWindow::updateViewActions() {
 void MainWindow::slotShowAboutCreatorBox() {
     QMessageBox::about(this, tr("About"),
                        tr("<h2>File Manager</h2>"
-                          "<p><em>Version 0.4.5</em><br>"
+                          "<p><em>Version 0.5.6</em><br>"
                           "К-26<br>"
                           "made by Alex. Kushnirenko, 2019<br>"));
 }
@@ -457,61 +459,61 @@ void MainWindow::createActionsAndMenus() {
 
 void MainWindow::createActions() {
 
-    deleteAction = Action::create(QIcon::fromTheme("edit-delete", QIcon(":/Images/Delete.ico")), tr("&Delete"),
+    deleteAction = Action::create(QIcon(":/Images/Delete.png"), tr("&Delete"),
                                   "Delete File", QKeySequence::Delete);
     deleteAction->setEnabled(false);
     connect(deleteAction, SIGNAL(triggered()), this, SLOT(slotDel()));
 
-    cutAction = Action::create(QIcon::fromTheme("edit-cut", QIcon(":/Images/Cut.png")), tr("&Cut"),
+    cutAction = Action::create(QIcon(":/Images/Cut.png"), tr("&Cut"),
                             "Cut File", QKeySequence::Cut);
     cutAction->setEnabled(false);
     connect(cutAction, SIGNAL(triggered()), this, SLOT(slotCut()));
 
-    copyAction = Action::create(QIcon::fromTheme("edit-copy", QIcon(":/Images/Copy.png")), tr("&Copy"),
+    copyAction = Action::create(QIcon(":/Images/Copy.png"), tr("&Copy"),
                              "Copy File", QKeySequence::Copy);
     copyAction->setEnabled(false);
     connect(copyAction, SIGNAL(triggered()), this, SLOT(slotCopy()));
 
-    pasteAction = Action::create(QIcon::fromTheme("edit-paste", QIcon(":/Images/Paste.png")), tr("Paste"),
+    pasteAction = Action::create(QIcon(":/Images/Paste.png"), tr("Paste"),
                                  "Paste File", QKeySequence::Paste);
     pasteAction->setEnabled(false);
     connect(pasteAction, SIGNAL(triggered()), this, SLOT(slotPaste()));
 
-    newFolderAction = Action::create(QIcon::fromTheme("edit-new-folder", QIcon(":/Images/NewFolder.ico")), tr("&New Folder"),
+    newFolderAction = Action::create(QIcon(":/Images/NewFolder.png"), tr("&New Folder"),
                                      "Create New Folder", QKeySequence::New);
     connect(newFolderAction, SIGNAL(triggered()), this, SLOT(slotNewFolder()));
 
-    newTxtAction = Action::create(QIcon::fromTheme("edit-new-file", QIcon(":/Images/NewFile.ico")), tr("&New File"),
+    newTxtAction = Action::create(QIcon(":/Images/NewFile.png"), tr("&New File"),
                                   "Create New File");
     connect(newTxtAction, SIGNAL(triggered()), this, SLOT(slotNewTxt()));
 
-    openAction = Action::create(QIcon(":/Images/OpenFile.ico"), tr("&Open"), "Open Element", QKeySequence::Open);
+    openAction = Action::create(QIcon(":/Images/Open.png"), tr("&Open"), "Open Element", QKeySequence::Open);
     connect(openAction, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
     connect(openAction, SIGNAL(triggered()), this, SLOT(slotOpenDir()));
 
-    parametersAction = Action::create(QIcon::fromTheme("parameters-other", QIcon(":/Images/Preferences.ico")), tr("&Parameters"),
+    parametersAction = Action::create(QIcon(":/Images/Parameters.png"), tr("&Parameters"),
                                     "Set Parameters", QKeySequence::Preferences);
     connect(parametersAction, SIGNAL(triggered()), this, SLOT(slotShowParameters()));
 
-    exitAction = Action::create(QIcon::fromTheme("application-exit", QIcon(":/Images/Exit.png")), tr("&Quit"),
+    exitAction = Action::create(QIcon(":/Images/Exit.png"), tr("&Quit"),
                              "Quit", QKeySequence::Quit);
     connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
-    hiddenAction = Action::create(QIcon::fromTheme("folder-saved-search"), tr("Hidden Files"), "Show Hidden Files");
+    hiddenAction = Action::create(QIcon(":/Images/Hidden.png"), tr("Hidden Files"), "Show Hidden Files");
     hiddenAction->setCheckable(true);
     connect(hiddenAction, SIGNAL(triggered()), this, SLOT(slotToggleHidden()));
 
-    openEditorAction = Action::create(QIcon::fromTheme("edit-new-editor", QIcon(":/Images/Notepad.ico")), tr("&File Editor"),
+    openEditorAction = Action::create(QIcon(":/Images/Notepad.png"), tr("&File Editor"),
                                       "Open File Editor");
     connect(openEditorAction, SIGNAL(triggered()), manualEditor, SLOT(slotShow()));
 
-    openSpreadsheetAction = Action::create(QIcon::fromTheme("edit-new-spreadsheet", QIcon(":/Images/Spreadsheet.ico")), tr("&Spreadsheet"),
-                                      "Open Spreadsheet");
+    openSpreadsheetAction = Action::create(QIcon(":/Images/Spreadsheet.png"), tr("&Spreadsheet"), "Open Spreadsheet");
     connect(openSpreadsheetAction, SIGNAL(triggered()), spreadsheet, SLOT(slotShow()));
-    aboutCreatorAction = Action::create(QIcon::fromTheme("help-about", QIcon(":/Images/About.ico")), tr("&About"), "About");
+
+    aboutCreatorAction = Action::create(QIcon(":/Images/About.png"), tr("&About"), "About");
     connect(aboutCreatorAction, SIGNAL(triggered()), this, SLOT(slotShowAboutCreatorBox()));
 
-    propertiesAction = Action::create(QIcon::fromTheme("document-properties", QIcon(":/Images/Properties.ico")), tr("&Properties"),
+    propertiesAction = Action::create(QIcon(":/Images/Properties.png"), tr("&Properties"),
                                    "Properties", QKeySequence(Qt::CTRL + Qt::Key_R));
     connect(propertiesAction, SIGNAL(triggered()), this, SLOT(slotShowProperties()));
 }
@@ -524,6 +526,7 @@ void MainWindow::createMenus() {
     fileMenu = menuBar->addMenu(tr("&File"));
     fileMenu->addActions(QList<QAction*>() << openSpreadsheetAction << openEditorAction << newTxtAction << newFolderAction <<
                          deleteAction << parametersAction);
+
     fileMenu->addSeparator();
     fileMenu->addAction(exitAction);
 
@@ -569,13 +572,11 @@ Pane* MainWindow::createPane() {
 
 void MainWindow::createViewChangeActions() {
 
-    detailViewAction = Action::create(QIcon::fromTheme("view-list-details", QIcon(":/Images/DetailView.ico")), tr("Table"),
-                                   "Table View");
+    detailViewAction = Action::create(QIcon(":/Images/DetailView.png"), tr("Table"), "Table View");
     detailViewAction->setCheckable(true);
     connect(detailViewAction, SIGNAL(triggered()), paneSwitcher, SLOT(slotToggleToDetailView()));
 
-    iconViewAction = Action::create(QIcon::fromTheme("view-list-icons", QIcon(":/Images/IconView.ico")), tr("List"),
-                                    "List View");
+    iconViewAction = Action::create(QIcon(":/Images/IconView.png"), tr("List"), "List View");
     iconViewAction->setCheckable(true);
     connect(iconViewAction, SIGNAL(triggered()), paneSwitcher, SLOT(slotToggleToIconView()));
 
@@ -600,8 +601,7 @@ void MainWindow::createContextSelectionMenu() {
     contextSelectionMenu->addSeparator();
     contextSelectionMenu->addActions(QList<QAction*>() << cutAction << copyAction << pasteAction);
     contextSelectionMenu->addSeparator();
-    Action *delete2Action = Action::create(QIcon::fromTheme("edit-delete", QIcon(":/Images/Delete.ico")), tr("&Delete"),
-                                  "Delete File", QKeySequence::Delete);
+    Action *delete2Action = Action::create(QIcon(":/Images/Delete.png"), tr("&Delete"), "Delete File", QKeySequence::Delete);
     connect(delete2Action, SIGNAL(triggered()), this, SLOT(slotDel()));
     contextSelectionMenu->addAction(delete2Action);
 }

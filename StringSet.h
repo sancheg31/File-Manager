@@ -4,6 +4,7 @@
 #include <QSet>
 #include <QList>
 #include <QString>
+#include <type_traits>
 
 class StringSet: public QObject {
     Q_OBJECT
@@ -30,4 +31,19 @@ signals:
     void setChanged();
     void setIsEmpty(bool);
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
