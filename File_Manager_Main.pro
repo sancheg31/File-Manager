@@ -28,12 +28,14 @@ SOURCES += \
     Action.cpp \
     DocWindow.cpp \
     EditorSearchPanel.cpp \
-    FileSystemModelFilterProxyModel.cpp \
+    FileManager.cpp \
+    FileManagerWindow.cpp \
     FindReplaceController.cpp \
     IDocument.cpp \
     MainWindow.cpp \
     Pane.cpp \
     PaneSwitcher.cpp \
+    ProxyModel.cpp \
     SearchPanel.cpp \
     StringSet.cpp \
     TextEditor.cpp \
@@ -59,12 +61,14 @@ HEADERS += \
     Action.h \
     DocWindow.h \
     EditorSearchPanel.h \
-    FileSystemModelFilterProxyModel.h \
+    FileManager.h \
+    FileManagerWindow.h \
     FindReplaceController.h \
     ISettings.h \
     MainWindow.h \
     Pane.h \
     PaneSwitcher.h \
+    ProxyModel.h \
     SearchPanel.h \
     StringSet.h \
     TextEditor.h \
@@ -97,4 +101,5 @@ RESOURCES += \
 
 FORMS += \
     Dialogs/gotocelldialog.ui \
-    Dialogs/sortdialog.ui
+    Dialogs/sortdialog.ui \
+    FileManagerWindow.ui

@@ -1,7 +1,7 @@
 #include <QModelIndex>
 #include <QFileSystemModel>
 
-#include "FileSystemModelFilterProxyModel.h"
+#include "ProxyModel.h"
 
 
 bool FileSystemModelFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
