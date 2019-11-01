@@ -3,6 +3,7 @@
 #include <QSplashScreen>
 
 #include "MainWindow.h"
+#include "FileManagerWindow.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
@@ -13,7 +14,7 @@ int main(int argc, char *argv[]) {
     splash->show();
     splash->showMessage(QObject::tr("Setting up the main window..."), Qt::AlignRight | Qt::AlignTop , Qt::white);
 
-    MainWindow mainWindow;
+    FileManagerWindow mainWindow;
     mainWindow.setWindowIcon(QIcon(":/Images/App.png"));
     mainWindow.show();
 

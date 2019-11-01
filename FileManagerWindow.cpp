@@ -11,7 +11,7 @@
 #include "ProxyModel.h"
 
 FileManagerWindow::FileManagerWindow(QWidget *parent) : QMainWindow(parent), searchPanel(new SearchPanel()),
-    manualEditor(new TextEditorWindow()), spreadsheet(new SpreadsheetWindow()),
+    manualEditor(new TextEditorWindow()), spreadsheet(new SpreadsheetWindow()), fileManager(new FileManager()),
     menuBar(new QMenuBar()), splitter(new QSplitter()), ui(new Ui::FileManagerWindow)
 {
 
@@ -151,7 +151,9 @@ void FileManagerWindow::slotShowContextDirectoryMenu(const QPoint& position) {
 
 void FileManagerWindow::slotOpenFile() {
     QFileInfo fileInfo = fileManager->fileInfo(activePane()->selectionModel()->currentIndex());
-    loadFile(fileInfo);
+    if (fileInfo.isFile()) {
+        loadFile(fileInfo);
+    }
 }
 
 void FileManagerWindow::slotOpenDir() {
@@ -329,7 +331,7 @@ void FileManagerWindow::updateViewActions() {
 void FileManagerWindow::slotShowAboutCreatorBox() {
     QMessageBox::about(this, tr("About"),
                        tr("<h2>File Manager</h2>"
-                          "<p><em>Version 0.5.6</em><br>"
+                          "<p><em>Version 0.7.1</em><br>"
                           "К-26<br>"
                           "made by Alex. Kushnirenko, 2019<br>"));
 }
