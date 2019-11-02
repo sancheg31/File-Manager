@@ -5,6 +5,8 @@
 TextEditorWindow::TextEditorWindow(QWidget * wgt): QMainWindow(wgt), textEditor(new TextEditor),
     menuWindows(new QMenu("&Windows")), area(new QMdiArea)
 {
+
+    connect(textEditor, SIGNAL(fileAboutToBeClosed(IDocument*)), this, SLOT(slotFileAboutToBeClosed(IDocument*)));
     setWindowTitle("Text Editor");
     setWindowIcon(QIcon(":/Images/Notepad.png"));
 
@@ -50,15 +52,12 @@ void TextEditorWindow::closeEvent(QCloseEvent * event) {
 }
 
 void TextEditorWindow::loadFile(const QFileInfo& fileInfo) {
-    textEditor->loadFile(fileInfo);
-    area->addSubWindow(textEditor->activeDocument());
-    textEditor->activeDocument()->show();
+    if (textEditor->loadFile(fileInfo)) {
+        area->addSubWindow(textEditor->activeDocument());
+        textEditor->activeDocument()->show();
+    }
 }
 
-
-void TextEditorWindow::loadFile(const QString& fileName, const QString& text) {
-    textEditor->loadFile(fileName, text);
-}
 
 void TextEditorWindow::slotShow() {
     show();
@@ -168,6 +167,15 @@ void TextEditorWindow::slotSetActiveDocument(QMdiSubWindow* win) {
     } else {
         textEditor->setActiveDocument(nullptr);
     }
+}
+
+void TextEditorWindow::slotFileAboutToBeClosed(IDocument*) {
+    int res = QMessageBox::information(nullptr, "Text Editor", "Save file \"" + textEditor->activeDocument()->fileName() + "\" ?",
+                                       QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel);
+    if (res == QMessageBox::Yes)
+        slotSave();
+    else if (res == QMessageBox::Cancel)
+        qDebug() << "What to do, what to do";
 }
 
 //private methods

@@ -2,11 +2,14 @@
 
 #include <QtWidgets>
 
-DocWindow::DocWindow(QWidget * wgt): IDocument(wgt) {
-    setWindowIcon(QIcon(":/Images/NewFile.png"));
+DocWindow::DocWindow(QWidget * wgt): IDocument(wgt), modified(false), fName("") {
     createStandardContextMenu();
+    connect(this, SIGNAL(textChanged()), this, SLOT(slotTextChanged()));
 }
 
+bool DocWindow::isModified() const {
+    return modified;
+}
 
 QString DocWindow::fileName() const {
     return fName == "" ? windowTitle() : fName;
@@ -19,7 +22,7 @@ void DocWindow::setFileName(const QString & str) {
 }
 
 void DocWindow::closeEvent(QCloseEvent * event) {
-    emit fileClosed(windowTitle());
+    emit fileClosed(fileName());
     QTextEdit::closeEvent(event);
 }
 
@@ -33,6 +36,7 @@ void DocWindow::load(const QString& str) {
          file.close();
          setFileName(str);
     }
+    modified = false;
 }
 
 void DocWindow::save() {
@@ -42,6 +46,7 @@ void DocWindow::save() {
         QTextStream(&file) << toPlainText();
         file.close();
     }
+    modified = false;
 }
 
 void DocWindow::saveAs(const QString& str) {
@@ -58,6 +63,10 @@ void DocWindow::slotSaveAs(const QString& str) {
 }
 void DocWindow::slotLoad(const QString& str) {
     load(str);
+}
+
+void DocWindow::slotTextChanged() {
+    modified = true;
 }
 
 

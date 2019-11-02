@@ -4,12 +4,18 @@
 #include <QList>
 #include <QFileInfo>
 
+#include "IPrototype.h"
 #include "IDocument.h"
+#include "IDocumentShell.h"
 
-class DocWindow: public IDocument {
+class DocumentShell: public QObject, public IDocumentShell {
 Q_OBJECT
 public:
-    DocWindow(QWidget * = nullptr);
+
+    DocumentShell(IDocument* ,QObject * = nullptr);
+
+    IDocument* clone() const;
+    IDocument* document() const;
 
     QString fileName() const;
     void setFileName(const QString&);
@@ -18,20 +24,16 @@ public:
     void save();
     void saveAs(const QString&);
 
-    bool isModified() const;
-
-protected:
-    void closeEvent(QCloseEvent*);
-
 private:
-    bool modified;
-    QString fName;
+    IDocument* doc;
 
 protected slots:
     void slotLoad(const QString&);
     void slotSave();
     void slotSaveAs(const QString&);
-    void slotTextChanged();
 
+signals:
+    void fileNameChanged(const QString& cur, const QString& prev);
+    void fileClosed(const QString& fileName);
 };
 

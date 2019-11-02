@@ -234,6 +234,8 @@ void FileManagerWindow::slotDel() {
 }
 
 void FileManagerWindow::slotNewFolder() {
+    if (focusWidget() != activePane()->focusWidget())
+        return;
     QAbstractItemView* currentView = activePane()->focusView();
     QModelIndex newDir = fileManager->newFolder(currentView->rootIndex());
     currentView->selectionModel()->setCurrentIndex(newDir, QItemSelectionModel::ClearAndSelect);
@@ -241,6 +243,8 @@ void FileManagerWindow::slotNewFolder() {
 }
 
 void FileManagerWindow::slotNewTxt() {
+    if (focusWidget() != activePane()->focusWidget())
+        return;
     QAbstractItemView* currentView = activePane()->focusView();
     QModelIndex fileIndex = fileManager->newTxt(currentView->rootIndex());
     currentView->setCurrentIndex(fileIndex);

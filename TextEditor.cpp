@@ -14,19 +14,22 @@ bool TextEditor::isNewFile() const {
     return actDoc->fileName().contains("new ") && !actDoc->fileName().endsWith(".txt");
 }
 
-void TextEditor::loadFile(const QFileInfo& fileInfo) {
+bool TextEditor::loadFile(const QFileInfo& fileInfo) {
     if (!fileInfo.isFile() || documents.contains(fileInfo.absoluteFilePath()))
-        return;
+        return false;
     loadFiles(QStringList() << fileInfo.absoluteFilePath());
+    return true;
 }
 
-void TextEditor::loadFile(const QString& fileName, const QString& text) {
+bool  TextEditor::loadFile(const QString& fileName, const QString& text) {
     if (QFileInfo(fileName).isFile())
-        loadFile(QFileInfo(fileName));
+        return loadFile(QFileInfo(fileName));
     else if (fileName.contains("new ") && !fileName.endsWith(".txt")) {
         IDocument* doc = createNewDocument();
         doc->setText(text);
+        return true;
     }
+    return false;
 }
 
 bool TextEditor::setActiveDocument(IDocument* doc) {
@@ -115,6 +118,11 @@ void TextEditor::setFont(QFont font) {
     actDoc->setFont(font);
 }
 
+void TextEditor::slotCloseFile(const QString&) {
+   if (activeDocument()->isModified())
+        emit fileAboutToBeClosed(activeDocument());
+}
+
 //private methods
 
 void TextEditor::loadFiles(const QStringList& list) {
@@ -145,14 +153,16 @@ IDocument* TextEditor::createNewDocument() {
     }
 
     IDocument* doc = new DocWindow;
-    doc->setAttribute(Qt::WA_DeleteOnClose);
+    //doc->setAttribute(Qt::WA_DeleteOnClose);
     doc->setWindowTitle(title);
+    doc->setWindowIcon(QIcon(":/Images/NewFile.png"));
 
     actDoc = doc;
     documents.insert(doc->fileName(), doc);
     connect(doc, SIGNAL(fileNameChanged(const QString&, const QString&)),
             &documents, SLOT(slotReplace(const QString&, const QString&)));
     connect(doc, SIGNAL(fileClosed(const QString&)), &documents, SLOT(slotRemove(const QString&)));
+    connect(doc, SIGNAL(fileClosed(const QString&)), this, SLOT(slotCloseFile(const QString&)));
     return doc;
 }
 

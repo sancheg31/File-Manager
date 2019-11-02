@@ -18,6 +18,7 @@ public:
     virtual void load(const QString&) = 0;
     virtual void save() = 0;
     virtual void saveAs(const QString&) = 0;
+    virtual bool isModified() const = 0;
 
 signals:
     void fileNameChanged(const QString& cur, const QString& prev);

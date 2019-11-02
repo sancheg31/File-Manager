@@ -23,8 +23,8 @@ public:
     void saveState(QSettings*) const;
 
 public slots:
-    void loadFile(const QFileInfo&);
-    void loadFile(const QString&, const QString&);
+    bool loadFile(const QFileInfo&);
+    bool loadFile(const QString&, const QString&);
 
     void undo();
     void cut();
@@ -40,6 +40,9 @@ public slots:
     bool saveAs(const QString&);
     bool save();
 
+private slots:
+    void slotCloseFile(const QString&);
+
 private:
 
     void loadFiles(const QStringList&);
@@ -51,5 +54,7 @@ private:
     QSettings* settings;
     DocumentContainer documents;
 
+signals:
+    void fileAboutToBeClosed(IDocument*);
 };
 

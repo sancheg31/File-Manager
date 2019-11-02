@@ -14,7 +14,6 @@ public:
     TextEditorWindow(QWidget* = nullptr);
 
     void loadFile(const QFileInfo&);
-    void loadFile(const QString&, const QString&);
 
 protected:
     virtual void closeEvent(QCloseEvent *) override;
@@ -41,6 +40,7 @@ private slots:
     void slotAbout();
     void slotSetActiveSubWindow(QWidget*);
     void slotSetActiveDocument(QMdiSubWindow*);
+    void slotFileAboutToBeClosed(IDocument*);
 
 private:
 
