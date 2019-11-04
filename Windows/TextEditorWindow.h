@@ -4,7 +4,7 @@
 #include <QMdiArea>
 #include <QSignalMapper>
 
-#include "ISettings.h"
+#include "Interfaces/ISettings.h"
 #include "StringSet.h"
 #include "TextEditor.h"
 

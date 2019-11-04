@@ -4,7 +4,7 @@
 #include <QPair>
 #include <QHash>
 
-#include "IDocument.h"
+#include "Interfaces/IDocument.h"
 
 class DocumentContainer: public QObject, public QHash<QString, IDocument*> {
 Q_OBJECT

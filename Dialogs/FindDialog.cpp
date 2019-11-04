@@ -6,7 +6,7 @@
 #include <QGridLayout>
 
 
-#include "FindDialog.h"
+#include "Dialogs/FindDialog.h"
 
 FindDialog::FindDialog(QWidget *parent) : QDialog(parent), label(new QLabel(tr("Find &what:"))), lineEdit(new QLineEdit),
 findButton(new QPushButton(tr("&Find"))), closeButton(new QPushButton(tr("Close"))),

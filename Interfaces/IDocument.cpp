@@ -1,4 +1,4 @@
-#include "IDocument.h"
+#include "Interfaces/IDocument.h"
 
 IDocument::IDocument(QWidget* wgt): QTextEdit(wgt) {}
 

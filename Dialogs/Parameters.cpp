@@ -2,8 +2,7 @@
 #include <QtWidgets>
 #include <QPair>
 
-#include "Parameters.h"
-#include "MainWindow.h"
+#include "Dialogs/Parameters.h"
 
 
 Parameters::Parameters(const QList<QPair<QString, bool>>& list, QWidget *parent) : QDialog(parent) {

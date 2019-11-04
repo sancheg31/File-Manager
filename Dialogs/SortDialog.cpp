@@ -1,6 +1,6 @@
 #include <QtGui>
 
-#include "SortDialog.h"
+#include "Dialogs/SortDialog.h"
 
 SortDialog::SortDialog(QWidget *parent): QDialog(parent) {
     setupUi(this);

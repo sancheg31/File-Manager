@@ -1,7 +1,7 @@
 #include <QtGui>
 #include <QPushButton>
 
-#include "GoToCellDialog.h"
+#include "Dialogs/GoToCellDialog.h"
 
 GoToCellDialog::GoToCellDialog(QWidget *parent) : QDialog(parent) {
     setupUi(this);

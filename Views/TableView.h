@@ -1,13 +1,10 @@
-#ifndef TABLEVIEW_H
-#define TABLEVIEW_H
+#pragma once
 
 #include <QTableView>
 
-#include "DefaultViewSettings.h"
+#include "Views/DefaultViewSettings.h"
 
 class TableView : public QTableView, public DefaultViewSettings {
 public:
     TableView(QWidget* = nullptr);
 };
-
-#endif // TABLEVIEW_H

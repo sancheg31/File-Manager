@@ -5,8 +5,8 @@
 #include "DocumentContainer.h"
 #include "DocWindow.h"
 
-#include "IDocument.h"
-#include "ISettings.h"
+#include "Interfaces/IDocument.h"
+#include "Interfaces/ISettings.h"
 
 class TextEditor: public QObject, public ISettings {
 Q_OBJECT

@@ -4,8 +4,6 @@
 #include <QTextEdit>
 #include <QString>
 
-#include "ISettings.h"
-
 class IDocument: public QTextEdit {
     Q_OBJECT
 public:

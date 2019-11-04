@@ -1,5 +1,4 @@
-#ifndef FINDREPLACECONTROLLER_H
-#define FINDREPLACECONTROLLER_H
+#pragma once
 
 #include <QTextEdit>
 #include <QList>
@@ -46,4 +45,3 @@ signals:
     void controllerChanged();
 };
 
-#endif // FINDREPLACECONTROLLER_H

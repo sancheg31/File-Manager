@@ -6,10 +6,10 @@
 #include "Views/ProxyTreeView.h"
 #include "PaneSwitcher.h"
 #include "SearchPanel.h"
-#include "SpreadsheetWindow.h"
-#include "TextEditorWindow.h"
+#include "Windows/SpreadsheetWindow.h"
+#include "Windows/TextEditorWindow.h"
 
-#include "ISettings.h"
+#include "Interfaces/ISettings.h"
 
 class Pane;
 class QSortFilterProxyModel;

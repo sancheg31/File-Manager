@@ -1,4 +1,4 @@
-#include "ProxyTreeView.h"
+#include "Views/ProxyTreeView.h"
 
 ProxyTreeView::ProxyTreeView(QWidget *wgt): QTreeView(wgt) {
 

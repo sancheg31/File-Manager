@@ -4,7 +4,7 @@
 #include <QList>
 #include <QFileInfo>
 
-#include "IDocument.h"
+#include "Interfaces/IDocument.h"
 
 class DocWindow: public IDocument {
 Q_OBJECT

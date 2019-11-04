@@ -2,8 +2,7 @@
 #include <QtWidgets>
 
 #include "Pane.h"
-#include "Properties.h"
-#include "MainWindow.h"
+#include "Dialogs/Properties.h"
 
 Properties::Properties(const QFileInfo& fileInfo, QWidget* parent) : QDialog(parent) {
     setWindowTitle(tr("Properties"));

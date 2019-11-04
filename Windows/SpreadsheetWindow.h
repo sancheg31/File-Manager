@@ -4,7 +4,7 @@
 #include <QTableWidget>
 #include <QSettings>
 
-#include "ISettings.h"
+#include "Interfaces/ISettings.h"
 
 class QAction;
 class QLabel;

@@ -2,8 +2,8 @@
 #include <QApplication>
 #include <QSplashScreen>
 
-#include "MainWindow.h"
-#include "FileManagerWindow.h"
+#include "Windows/MainWindow.h"
+#include "Windows/FileManagerWindow.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);

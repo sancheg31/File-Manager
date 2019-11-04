@@ -1,4 +1,4 @@
-#include "DefaultViewSettings.h"
+#include "Views/DefaultViewSettings.h"
 
 QAbstractItemView* DefaultViewSettings::setDefaultViewSettings(QAbstractItemView * view) const {
     view->setSelectionMode(QAbstractItemView::ExtendedSelection);

@@ -3,7 +3,7 @@
 #include <QWidget>
 #include <QDir>
 
-#include "ISettings.h"
+#include "Interfaces/ISettings.h"
 
 class QComboBox;
 class QCheckBox;

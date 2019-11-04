@@ -1,13 +1,10 @@
-#ifndef LISTVIEW_H
-#define LISTVIEW_H
+#pragma once
 
 #include <QListView>
 
-#include "DefaultViewSettings.h"
+#include "Views/DefaultViewSettings.h"
 
 class ListView: public QListView, public DefaultViewSettings {
 public:
     ListView(QWidget* = nullptr);
 };
-
-#endif // LISTVIEW_H

@@ -26,69 +26,71 @@ CONFIG += c++17
 
 SOURCES += \
     Action.cpp \
-    DocWindow.cpp \
+    Cell.cpp \
+    Dialogs/FindDialog.cpp \
+    Dialogs/GoToCellDialog.cpp \
+    Dialogs/Parameters.cpp \
+    Dialogs/Properties.cpp \
+    Dialogs/SortDialog.cpp \
+    DocumentContainer.cpp \
     EditorSearchPanel.cpp \
     FileManager.cpp \
-    FileManagerWindow.cpp \
     FindReplaceController.cpp \
-    IDocument.cpp \
-    MainWindow.cpp \
+    Interfaces/IDocument.cpp \
     Pane.cpp \
     PaneSwitcher.cpp \
     ProxyModel.cpp \
     SearchPanel.cpp \
+    SpreadSheet.cpp \
+    SpreadSheetCompare.cpp \
     StringSet.cpp \
     TextEditor.cpp \
-    main.cpp \
-    Cell.cpp \
-    SpreadSheetCompare.cpp \
-    SpreadsheetWindow.cpp \
+    Views/DefaultViewSettings.cpp \
     Views/ListView.cpp \
+    Views/ProxyTreeView.cpp \
     Views/TableView.cpp \
     Views/TreeView.cpp \
-    Views/DefaultViewSettings.cpp \
-    Views/ProxyTreeView.cpp \
-    SpreadSheet.cpp \
-    Dialogs/FindDialog.cpp \
-    Dialogs/GoToCellDialog.cpp \
-    Dialogs/SortDialog.cpp \
-    Dialogs/Parameters.cpp \
-    Dialogs/Properties.cpp \
-    TextEditorWindow.cpp \
-    DocumentContainer.cpp
+    Windows/FileManagerWindow.cpp \
+    Windows/MainWindow.cpp \
+    Windows/SpreadsheetWindow.cpp \
+    Windows/TextEditorWindow.cpp \
+    docwindow.cpp \
+    main.cpp
+
 
 HEADERS += \
     Action.h \
-    DocWindow.h \
+    Cell.h \
+    Dialogs/FindDialog.h \
+    Dialogs/GoToCellDialog.h \
+    Dialogs/Parameters.h \
+    Dialogs/Properties.h \
+    Dialogs/SortDialog.h \
+    DocumentContainer.h \
     EditorSearchPanel.h \
     FileManager.h \
-    FileManagerWindow.h \
-    FindReplaceController.h \
-    ISettings.h \
-    MainWindow.h \
+    Interfaces/IDocument.h \
+    Interfaces/ISettings.h \
     Pane.h \
     PaneSwitcher.h \
     ProxyModel.h \
     SearchPanel.h \
+    SpreadSheet.h \
+    SpreadSheetCompare.h \
     StringSet.h \
     TextEditor.h \
     Views/DefaultViewSettings.h \
     Views/ListView.h \
+    Views/ProxyTreeView.h \
     Views/TableView.h \
     Views/TreeView.h \
-    Views/ProxyTreeView.h \
-    SpreadSheet.h \
-    Cell.h \
-    SpreadSheetCompare.h \
-    SpreadsheetWindow.h \
-    Dialogs/Parameters.h \
-    Dialogs/Properties.h \
-    Dialogs/FindDialog.h \
-    Dialogs/GoToCellDialog.h \
-    Dialogs/SortDialog.h \
-    TextEditorWindow.h \
-    DocumentContainer.h \
-    IDocument.h
+    Windows/FileManagerWindow.h \
+    Windows/MainWindow.h \
+    Windows/SpreadsheetWindow.h \
+    Windows/TextEditorWindow.h \
+    docwindow.h \
+    findReplaceController.h
+
 
 
 # Default rules for deployment.
@@ -97,9 +99,47 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
+    resources.qrc \
+    resources.qrc \
     resources.qrc
 
 FORMS += \
     Dialogs/gotocelldialog.ui \
     Dialogs/sortdialog.ui \
-    FileManagerWindow.ui
+    Windows/FileManagerWindow.ui
+
+DISTFILES += \
+    Images/About.png \
+    Images/App.png \
+    Images/Cascade.png \
+    Images/Copy.png \
+    Images/Cut.png \
+    Images/DateAndTime.png \
+    Images/Delete.png \
+    Images/Exit.png \
+    Images/Find.png \
+    Images/FindNext.png \
+    Images/FindPrevious.png \
+    Images/Font.png \
+    Images/GoTo.png \
+    Images/Grid.png \
+    Images/Hidden.png \
+    Images/NewFile.png \
+    Images/NewFolder.png \
+    Images/Notepad.png \
+    Images/Open.png \
+    Images/Parameters.png \
+    Images/Paste.png \
+    Images/Recalculate.png \
+    Images/Replace.png \
+    Images/Save.png \
+    Images/SaveAll.png \
+    Images/SaveAs.png \
+    Images/Select.png \
+    Images/SelectAll.png \
+    Images/SelectColumn.png \
+    Images/SelectRow.png \
+    Images/Sort.png \
+    Images/Spreadsheet.png \
+    Images/Tile.png \
+    Images/Undo.png

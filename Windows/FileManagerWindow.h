@@ -8,7 +8,7 @@
 #include "PaneSwitcher.h"
 #include "SearchPanel.h"
 
-#include "ISettings.h"
+#include "Interfaces/ISettings.h"
 
 namespace Ui {
 class FileManagerWindow;

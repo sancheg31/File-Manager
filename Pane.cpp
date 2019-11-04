@@ -1,4 +1,4 @@
-#include "MainWindow.h"
+
 #include "Pane.h"
 
 Pane::Pane(QFileSystemModel* model, QWidget* parent) : QFrame (parent), treeView(new TreeView(this)),
