@@ -79,7 +79,7 @@ bool Spreadsheet::writeFile(const QString &fileName) {
     }
     QDataStream out(&file);
     out.setVersion(QDataStream::Qt_5_12);
-    out << quint32(MagicNumber);
+    out << quint32(CheckValue);
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
     for (int row = 0; row < RowCount; ++row)
@@ -107,7 +107,7 @@ bool Spreadsheet::readFile(const QString &fileName) {
     quint32 magic;
     in >> magic;
 
-    if (magic != MagicNumber) {
+    if (magic != CheckValue) {
         QMessageBox::warning(this, tr("Spreadsheet"),
                              tr("The file is not a Spreadsheet file."));
         return false;

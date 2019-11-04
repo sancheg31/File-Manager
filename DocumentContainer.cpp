@@ -3,31 +3,38 @@
 #include "DocumentContainer.h"
 
 DocumentContainer::DocumentContainer() {
-    emit containerIsEmpty(isEmpty());
+    emit containerIsEmpty(cont.isEmpty());
 }
 
 auto DocumentContainer::insert(const QString& str, IDocument* doc) -> iterator {
-    auto it = QHash<QString, IDocument*>::insert(str, doc);
-    qDebug() << "DocumentContainer::insert(): container size after inserting; " << str << " " << count();
-    emit containerIsEmpty(isEmpty());
+    auto it = cont.insert(str, doc);
+    qDebug() << "DocumentContainer::insert(): container size after inserting; " << str << " " << cont.count();
+    emit containerIsEmpty(cont.isEmpty());
     return it;
+}
+
+int DocumentContainer::remove(const QString& str) {
+    int temp = cont.remove(str);
+    qDebug() << "DocumentContainer::remove(): container size after removing; " << str << " " << cont.count();
+    emit containerIsEmpty(cont.isEmpty());
+    return temp;
 }
 
 void DocumentContainer::slotReplace(const QString& cur, const QString& prev) {
     qDebug() << "DocumentContainer::slotReplace(): container size after replacing; " << prev
-             << " with " << cur << " " << count();
-    if (contains(prev)) {
-        IDocument* doc = value(prev);
-        remove(prev);
-        insert(cur, doc);
+             << " with " << cur << " " << cont.count();
+    if (cont.contains(prev)) {
+        IDocument* doc = cont.value(prev);
+        cont.remove(prev);
+        cont.insert(cur, doc);
     }
-    emit containerIsEmpty(isEmpty());
+    emit containerIsEmpty(cont.isEmpty());
 }
 
 void DocumentContainer::slotRemove(const QString& str) {
-    int temp = remove(str);
-    qDebug() << "DocumentContainer::slotRemove(): container size after removing; " << str << " " << count();
-    emit containerIsEmpty(isEmpty());
+    int temp = cont.remove(str);
+    qDebug() << "DocumentContainer::slotRemove(): container size after removing; " << str << " " << cont.count();
+    emit containerIsEmpty(cont.isEmpty());
 }
 
 

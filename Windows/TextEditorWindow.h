@@ -5,7 +5,6 @@
 #include <QSignalMapper>
 
 #include "Interfaces/ISettings.h"
-#include "StringSet.h"
 #include "TextEditor.h"
 
 class TextEditorWindow: public QMainWindow, private ISettings {

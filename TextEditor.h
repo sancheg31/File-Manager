@@ -43,6 +43,7 @@ public slots:
 
 private slots:
     void slotCloseFile(const QString&);
+    void slotStateChanged(IDocument::State);
 
 private:
 

@@ -2,7 +2,6 @@
 #include <QApplication>
 #include <QSplashScreen>
 
-#include "Windows/MainWindow.h"
 #include "Windows/FileManagerWindow.h"
 
 int main(int argc, char *argv[]) {

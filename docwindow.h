@@ -25,10 +25,12 @@ protected:
     void closeEvent(QCloseEvent*);
 
 private:
+
     State st;
     QString fName;
 
 protected slots:
+
     void slotLoad(const QString&);
     void slotSave();
     void slotSaveAs(const QString&);

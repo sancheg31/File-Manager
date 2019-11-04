@@ -23,7 +23,7 @@ public:
 
     static const int RowCount = 30;
     static const int ColumnCount = 26;
-    static const int MagicNumber = 0x7F51C883;
+    static const int CheckValue = 0x123FBC78;
 
 public slots:
     void cut();

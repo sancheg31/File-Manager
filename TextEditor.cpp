@@ -118,10 +118,20 @@ void TextEditor::setFont(QFont font) {
 }
 
 void TextEditor::slotCloseFile(const QString&) {
-   if (activeDocument()->state() == IDocument::State::Modified)
-        emit fileAboutToBeClosed(activeDocument());
-   if (activeDocument()->state() != IDocument::State::Modified)
+   if (activeDocument()->state() == IDocument::State::Modified) {
+       emit fileAboutToBeClosed(activeDocument());
+   }
+   if (activeDocument()->state() != IDocument::State::Modified) {
        documents.remove(activeDocument()->fileName());
+   }
+}
+
+void TextEditor::slotStateChanged(IDocument::State state) {
+    if (state == IDocument::State::Modified)
+        activeDocument()->setWindowIcon(QPixmap(":/Images/ModifiedNewFile.png"));
+    else if (state == IDocument::State::Saved)
+        activeDocument()->setWindowIcon(QPixmap(":/Images/NewFile.png"));
+    qDebug() << "TextEditor::slotStateChanged(): Icon should be set";
 }
 
 //private methods
@@ -164,6 +174,7 @@ IDocument* TextEditor::createNewDocument() {
             &documents, SLOT(slotReplace(const QString&, const QString&)));
     //connect(doc, SIGNAL(fileClosed(const QString&)), &documents, SLOT(slotRemove(const QString&)));
     connect(doc, SIGNAL(fileClosed(const QString&)), this, SLOT(slotCloseFile(const QString&)));
+    connect(doc, SIGNAL(stateChanged(IDocument::State)), this, SLOT(slotStateChanged(IDocument::State)));
     return doc;
 }
 
@@ -182,9 +193,6 @@ QSettings* TextEditor::restoreState() {
             loadFile(fileName, plainText);
         }
         activeDocument()->setState(state);
-        //QFont font;
-        //font.fromString(settings->value(QString("Font%1").arg(i)).toString());
-        //activeDocument()->setFont(font);
     }
 
     QString actDocName = settings->value("ActiveDocument").toString();

@@ -55,8 +55,8 @@ private:
     void createToolBars();
     void createStatusBar();
 
-    virtual QSettings* restoreState() override;
-    virtual void saveState(QSettings*) const override;
+    QSettings* restoreState();
+    void saveState(QSettings*) const;
 
     bool okToContinue();
     bool loadFile(const QString &fileName);

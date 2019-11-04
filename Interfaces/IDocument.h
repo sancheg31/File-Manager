@@ -23,5 +23,6 @@ public:
 signals:
     void fileNameChanged(const QString& cur, const QString& prev);
     void fileClosed(const QString& fileName);
+    void stateChanged(IDocument::State);
 
 };

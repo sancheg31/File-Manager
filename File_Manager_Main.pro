@@ -26,6 +26,13 @@ CONFIG += c++17
 
 SOURCES += \
     Action.cpp \
+    ArithmeticParser/BinaryOperation.cpp \
+    ArithmeticParser/Interfaces/IOperation.cpp \
+    ArithmeticParser/Interfaces/IParserTemplateMethod.cpp \
+    ArithmeticParser/OperationContainer.cpp \
+    ArithmeticParser/OperationTable.cpp \
+    ArithmeticParser/Parser.cpp \
+    ArithmeticParser/UnaryOperation.cpp \
     Cell.cpp \
     Dialogs/FindDialog.cpp \
     Dialogs/GoToCellDialog.cpp \
@@ -37,6 +44,7 @@ SOURCES += \
     FileManager.cpp \
     FindReplaceController.cpp \
     Interfaces/IDocument.cpp \
+    Interfaces/IPrototype.cpp \
     Interfaces/ISaveable.cpp \
     Pane.cpp \
     PaneSwitcher.cpp \
@@ -44,7 +52,6 @@ SOURCES += \
     SearchPanel.cpp \
     SpreadSheet.cpp \
     SpreadSheetCompare.cpp \
-    StringSet.cpp \
     Styles/SpreadsheetStyle.cpp \
     TextEditor.cpp \
     Views/DefaultViewSettings.cpp \
@@ -53,7 +60,6 @@ SOURCES += \
     Views/TableView.cpp \
     Views/TreeView.cpp \
     Windows/FileManagerWindow.cpp \
-    Windows/MainWindow.cpp \
     Windows/SpreadsheetWindow.cpp \
     Windows/TextEditorWindow.cpp \
     docwindow.cpp \
@@ -62,6 +68,13 @@ SOURCES += \
 
 HEADERS += \
     Action.h \
+    ArithmeticParser/BinaryOperation.h \
+    ArithmeticParser/Interfaces/IOperation.h \
+    ArithmeticParser/Interfaces/IParserTemplateMethod.h \
+    ArithmeticParser/OperationContainer.h \
+    ArithmeticParser/OperationTable.h \
+    ArithmeticParser/Parser.h \
+    ArithmeticParser/UnaryOperation.h \
     Cell.h \
     Dialogs/FindDialog.h \
     Dialogs/GoToCellDialog.h \
@@ -72,6 +85,7 @@ HEADERS += \
     EditorSearchPanel.h \
     FileManager.h \
     Interfaces/IDocument.h \
+    Interfaces/IPrototype.h \
     Interfaces/ISaveable.h \
     Interfaces/ISettings.h \
     Pane.h \
@@ -80,7 +94,6 @@ HEADERS += \
     SearchPanel.h \
     SpreadSheet.h \
     SpreadSheetCompare.h \
-    StringSet.h \
     Styles/SpreadsheetStyle.h \
     TextEditor.h \
     Views/DefaultViewSettings.h \
@@ -89,7 +102,6 @@ HEADERS += \
     Views/TableView.h \
     Views/TreeView.h \
     Windows/FileManagerWindow.h \
-    Windows/MainWindow.h \
     Windows/SpreadsheetWindow.h \
     Windows/TextEditorWindow.h \
     docwindow.h \

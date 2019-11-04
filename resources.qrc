@@ -34,5 +34,6 @@
         <file>Images/FindNext.png</file>
         <file>Images/Replace.png</file>
         <file>Images/FindPrevious.png</file>
+        <file>Images/ModifiedNewFile.png</file>
     </qresource>
 </RCC>
