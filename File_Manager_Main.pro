@@ -53,6 +53,7 @@ SOURCES += \
     SpreadSheet.cpp \
     SpreadSheetCompare.cpp \
     Styles/SpreadsheetStyle.cpp \
+    TableParser.cpp \
     TextEditor.cpp \
     Views/DefaultViewSettings.cpp \
     Views/ListView.cpp \
@@ -95,6 +96,7 @@ HEADERS += \
     SpreadSheet.h \
     SpreadSheetCompare.h \
     Styles/SpreadsheetStyle.h \
+    TableParser.h \
     TextEditor.h \
     Views/DefaultViewSettings.h \
     Views/ListView.h \

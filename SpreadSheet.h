@@ -2,8 +2,10 @@
 
 #include <QTableWidget>
 
+
 class Cell;
 class SpreadsheetCompare;
+class TableParser;
 
 class Spreadsheet : public QTableWidget {
     Q_OBJECT
@@ -21,6 +23,7 @@ public:
     bool writeFile(const QString &fileName);
     void sort(const SpreadsheetCompare &compare);
 
+    TableParser* parser() const { return tabParser; }
     static const int RowCount = 30;
     static const int ColumnCount = 26;
     static const int CheckValue = 0x123FBC78;
@@ -51,6 +54,7 @@ private:
     void setFormula(int row, int column, const QString &formula);
 
     bool autoRecalc;
+    TableParser* tabParser;
 };
 
 

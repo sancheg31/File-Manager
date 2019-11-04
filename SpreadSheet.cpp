@@ -6,9 +6,10 @@
 #include "Cell.h"
 #include "SpreadSheet.h"
 #include "SpreadSheetCompare.h"
+#include "TableParser.h"
 #include "Styles/SpreadsheetStyle.h"
 
-Spreadsheet::Spreadsheet(QWidget* parent): QTableWidget(parent), autoRecalc(true) {
+Spreadsheet::Spreadsheet(QWidget* parent): QTableWidget(parent), autoRecalc(true), tabParser(new TableParser(this)) {
     setItemPrototype(new Cell);
     setSelectionMode(ContiguousSelection);
     //setStyle(new SpreadsheetStyle());

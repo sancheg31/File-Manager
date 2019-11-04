@@ -4,7 +4,7 @@
 Parser::Parser() { }
 #include <QDebug>
 
-Parser::Parser(const OperationTable& t, const QSet<QString>& cell): table(t), cellNames(cell) { }
+Parser::Parser(const OperationTable& t): table(t) { }
 
 Parser::~Parser() { }
 
@@ -129,107 +129,3 @@ QVariant Parser::evalFactor(const QString& str, int& pos) const {
     }
     return result;
 }
-/*
-QVariant evalExpression(const QString &str, int &pos) {
-
-    QVariant result = evalTerm(str, pos);
-    while (str[pos] != QChar::Null) {
-        QChar op = str[pos];
-        if (op != '+' && op != '-')
-            return result;
-        ++pos;
-
-        QVariant term = evalTerm(str, pos);
-        if (result.type() == QVariant::Double
-                && term.type() == QVariant::Double) {
-            if (op == '+') {
-                result = result.toDouble() + term.toDouble();
-            } else {
-                result = result.toDouble() - term.toDouble();
-            }
-        } else {
-            result = QVariant{};
-        }
-    }
-    return result;
-}
-
-QVariant evalTerm(const QString &str, int & pos, int priority) {
-    QVariant result = (priority) ? evalTerm(str, pos, priority-1) : evalFactor(str, pos);
-    while (str[pos] != QChar::Null) {
-        QChar op = str[pos];
-        if (op != '*' && op != '/')
-            return result;
-        ++pos;
-
-        QVariant factor = (priority) ? evalTerm(str, pos, priority-1) : evalFactor(str, pos);
-        if (result.type() == QVariant::Double
-                && factor.type() == QVariant::Double) {
-            if (op == '*') {
-                result = result.toDouble() * factor.toDouble();
-            } else {
-                if (factor.toDouble() == 0.0) {
-                    result = QVariant{};
-                } else {
-                    result = result.toDouble() / factor.toDouble();
-                }
-            }
-        } else {
-            result = QVariant{};
-        }
-    }
-    return result;
-}
-
-QVariant evalFactor(const QString &str, int & pos) {
-    QVariant result;
-    bool negative = false;
-
-    if (str[pos] == '-') {
-        negative = true;
-        ++pos;
-    }
-
-    if (str[pos] == '(') {
-        ++pos;
-        result = evalExpression(str, pos);
-        if (str[pos] != ')')
-            result = QVariant{};
-        ++pos;
-    } else {
-        QRegExp regExp("[A-Za-z][1-9][0-9]{0,2}");
-        QString token;
-
-        while (str[pos].isLetterOrNumber() || str[pos] == '.') {
-            token += str[pos];
-            ++pos;
-        }
-
-        if (regExp.exactMatch(token)) {
-            int column = token[0].toUpper().unicode() - 'A';
-            int row = token.mid(1).toInt() - 1;
-
-            //Cell *c = static_cast<Cell *>(tableWidget()->item(row, column));
-            if (c) {
-                result = c->value();
-            } else {
-                result = 0.0;
-            }
-        } else {
-            bool ok;
-            result = token.toDouble(&ok);
-            if (!ok)
-                result = QVariant{};
-        }
-    }
-
-    if (negative) {
-        if (result.type() == QVariant::Double) {
-            result = -result.toDouble();
-        } else {
-            result = QVariant::Invalid;
-        }
-    }
-    return result;
-}
-*/

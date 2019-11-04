@@ -2,6 +2,8 @@
 #include <QTableWidget>
 
 #include "Cell.h"
+#include "Spreadsheet.h"
+#include "TableParser.h"
 
 Cell::Cell() {
     setDirty();
@@ -47,27 +49,20 @@ QString Cell::formula() const {
 }
 
 void Cell::setDirty() {
-    cacheIsDirty = true;
+    modified = true;
 }
 
 QVariant Cell::value() const {
 
-    if (cacheIsDirty) {
-        cacheIsDirty = false;
+    if (modified) {
+        modified = false;
 
         QString formulaStr = formula();
         if (formulaStr.startsWith('\'')) {
             cachedValue = formulaStr.mid(1);
         } else if (formulaStr.startsWith('=')) {
-            cachedValue = Invalid;
-            QString expr = formulaStr.mid(1);
-            expr.replace(" ", "");
-            expr.append(QChar::Null);
-
-            int pos = 0;
-            cachedValue = evalExpression(expr, pos);
-            if (expr[pos] != QChar::Null)
-                cachedValue = Invalid;
+            auto sp = qobject_cast<Spreadsheet*>(tableWidget());
+            cachedValue = sp->parser()->parse(formulaStr);
         } else {
             bool ok;
             double d = formulaStr.toDouble(&ok);
@@ -81,7 +76,7 @@ QVariant Cell::value() const {
     return cachedValue;
 
 }
-
+/*
 QVariant Cell::evalExpression(const QString &str, int &pos) const {
 
     QVariant result = evalTerm(str, pos);
@@ -187,3 +182,4 @@ QVariant Cell::evalFactor(const QString &str, int &pos) const {
     }
     return result;
 }
+*/

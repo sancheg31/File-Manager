@@ -166,7 +166,7 @@ IDocument* TextEditor::createNewDocument() {
     IDocument* doc = new DocWindow;
     //doc->setAttribute(Qt::WA_DeleteOnClose);
     doc->setWindowTitle(title);
-    doc->setWindowIcon(QIcon(":/Images/NewFile.png"));
+    doc->setWindowIcon(QPixmap(":/Images/ModifiedNewFile.png"));
 
     actDoc = doc;
     documents.insert(doc->fileName(), doc);
