@@ -6,11 +6,12 @@
 #include "Cell.h"
 #include "SpreadSheet.h"
 #include "SpreadSheetCompare.h"
+#include "Styles/SpreadsheetStyle.h"
 
 Spreadsheet::Spreadsheet(QWidget* parent): QTableWidget(parent), autoRecalc(true) {
     setItemPrototype(new Cell);
     setSelectionMode(ContiguousSelection);
-
+    //setStyle(new SpreadsheetStyle());
     connect(this, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(slotSomethingChanged()));
     clear();
 }

@@ -169,13 +169,14 @@ void TextEditorWindow::slotSetActiveDocument(QMdiSubWindow* win) {
     }
 }
 
-void TextEditorWindow::slotFileAboutToBeClosed(IDocument*) {
+void TextEditorWindow::slotFileAboutToBeClosed(IDocument* doc) {
     int res = QMessageBox::information(nullptr, "Text Editor", "Save file \"" + textEditor->activeDocument()->fileName() + "\" ?",
                                        QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel);
     if (res == QMessageBox::Yes)
         slotSave();
-    else if (res == QMessageBox::Cancel)
-        qDebug() << "What to do, what to do";
+    else if (res == QMessageBox::No)
+        doc->setState(IDocument::State::Closed);
+
 }
 
 //private methods

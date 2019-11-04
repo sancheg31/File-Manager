@@ -21,10 +21,10 @@ class SpreadsheetWindow : public QMainWindow, private ISettings {
 
 public:
     explicit SpreadsheetWindow(QWidget *parent = nullptr);
-    virtual ~SpreadsheetWindow() override;
+    ~SpreadsheetWindow();
 
 protected:
-    virtual void closeEvent(QCloseEvent *) override;
+    void closeEvent(QCloseEvent *);
 
 private slots:
 
@@ -37,10 +37,7 @@ private slots:
     void slotGoToCell();
     void slotSort();
 
-    void slotShowGrid();
-
     void slotAbout();
-    void slotAboutQt();
     void slotShow();
 
     void slotOpenRecentFile();

@@ -37,6 +37,7 @@ SOURCES += \
     FileManager.cpp \
     FindReplaceController.cpp \
     Interfaces/IDocument.cpp \
+    Interfaces/ISaveable.cpp \
     Pane.cpp \
     PaneSwitcher.cpp \
     ProxyModel.cpp \
@@ -44,6 +45,7 @@ SOURCES += \
     SpreadSheet.cpp \
     SpreadSheetCompare.cpp \
     StringSet.cpp \
+    Styles/SpreadsheetStyle.cpp \
     TextEditor.cpp \
     Views/DefaultViewSettings.cpp \
     Views/ListView.cpp \
@@ -70,6 +72,7 @@ HEADERS += \
     EditorSearchPanel.h \
     FileManager.h \
     Interfaces/IDocument.h \
+    Interfaces/ISaveable.h \
     Interfaces/ISettings.h \
     Pane.h \
     PaneSwitcher.h \
@@ -78,6 +81,7 @@ HEADERS += \
     SpreadSheet.h \
     SpreadSheetCompare.h \
     StringSet.h \
+    Styles/SpreadsheetStyle.h \
     TextEditor.h \
     Views/DefaultViewSettings.h \
     Views/ListView.h \

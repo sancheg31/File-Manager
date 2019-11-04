@@ -36,9 +36,8 @@ bool TextEditor::setActiveDocument(IDocument* doc) {
     if (!doc || documents.contains(doc->fileName())) {
         actDoc = doc;
         return true;
-    } else {
-        return false;
     }
+    return false;
 }
 
 IDocument* TextEditor::activeDocument() const {
@@ -119,8 +118,10 @@ void TextEditor::setFont(QFont font) {
 }
 
 void TextEditor::slotCloseFile(const QString&) {
-   if (activeDocument()->isModified())
+   if (activeDocument()->state() == IDocument::State::Modified)
         emit fileAboutToBeClosed(activeDocument());
+   if (activeDocument()->state() != IDocument::State::Modified)
+       documents.remove(activeDocument()->fileName());
 }
 
 //private methods
@@ -161,7 +162,7 @@ IDocument* TextEditor::createNewDocument() {
     documents.insert(doc->fileName(), doc);
     connect(doc, SIGNAL(fileNameChanged(const QString&, const QString&)),
             &documents, SLOT(slotReplace(const QString&, const QString&)));
-    connect(doc, SIGNAL(fileClosed(const QString&)), &documents, SLOT(slotRemove(const QString&)));
+    //connect(doc, SIGNAL(fileClosed(const QString&)), &documents, SLOT(slotRemove(const QString&)));
     connect(doc, SIGNAL(fileClosed(const QString&)), this, SLOT(slotCloseFile(const QString&)));
     return doc;
 }
@@ -172,6 +173,7 @@ QSettings* TextEditor::restoreState() {
 
     for (int i = 0; i < listCount; ++i) {
         QString fileName(settings->value(QString("File%1").arg(i)).toString());
+        auto state = static_cast<IDocument::State>(settings->value(QString("FileState%1").arg(i)).toInt());
         if (fileName.endsWith(".txt") && QFileInfo(fileName).isFile()) {
             loadFile(QFileInfo(fileName));
         }
@@ -179,6 +181,7 @@ QSettings* TextEditor::restoreState() {
             QString plainText(settings->value(QString("FileInfo%1").arg(i)).toString());
             loadFile(fileName, plainText);
         }
+        activeDocument()->setState(state);
         //QFont font;
         //font.fromString(settings->value(QString("Font%1").arg(i)).toString());
         //activeDocument()->setFont(font);
@@ -196,6 +199,7 @@ void TextEditor::saveState(QSettings* settings) const {
     int ind = 0;
     for(auto it = documents.begin(); it != documents.end(); ++it) {
         settings->setValue(QString("File%1").arg(ind), it.key());
+        settings->setValue(QString("FileState%1").arg(ind), (int)it.value()->state());
         if (it.key().contains("new ") && !it.key().endsWith(".txt")) {
             settings->setValue(QString("FileInfo%1").arg(ind), it.value()->document()->toRawText());
             //settings->setValue(QString("Font%1").arg(ind), activeDocument()->font().toString());

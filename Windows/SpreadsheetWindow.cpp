@@ -142,15 +142,7 @@ void SpreadsheetWindow::slotSort(){
     }
 }
 
-void SpreadsheetWindow::slotShowGrid(){
-
-}
-
-void SpreadsheetWindow::slotAbout(){
-
-}
-
-void SpreadsheetWindow::slotAboutQt(){
+void SpreadsheetWindow::slotAbout() {
 
 }
 
@@ -179,8 +171,13 @@ void SpreadsheetWindow::slotSpreadsheetModified(){
 }
 
 void SpreadsheetWindow::closeEvent(QCloseEvent * e) {
-    saveState(settings);
-    QMainWindow::closeEvent(e);
+    if(okToContinue()) {
+        saveState(settings);
+        e->accept();
+        QMainWindow::closeEvent(e);
+    } else {
+        e->ignore();
+    }
 }
 
 //-------------------------------------------------
@@ -392,6 +389,7 @@ void SpreadsheetWindow::createToolBars(){
     editToolBar->addActions(QList<QAction*>() << cutAction << copyAction << pasteAction);
     editToolBar->addSeparator();
     editToolBar->addActions(QList<QAction*>() << findAction << goToCellAction);
+    editToolBar->addSeparator();
 }
 
 void SpreadsheetWindow::createStatusBar(){

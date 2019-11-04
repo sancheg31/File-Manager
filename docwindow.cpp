@@ -2,13 +2,9 @@
 
 #include <QtWidgets>
 
-DocWindow::DocWindow(QWidget * wgt): IDocument(wgt), modified(false), fName("") {
+DocWindow::DocWindow(QWidget * wgt): IDocument(wgt), st(State::Opened), fName("") {
     createStandardContextMenu();
     connect(this, SIGNAL(textChanged()), this, SLOT(slotTextChanged()));
-}
-
-bool DocWindow::isModified() const {
-    return modified;
 }
 
 QString DocWindow::fileName() const {
@@ -22,8 +18,15 @@ void DocWindow::setFileName(const QString & str) {
 }
 
 void DocWindow::closeEvent(QCloseEvent * event) {
+    qDebug() << (int)st;
     emit fileClosed(fileName());
-    QTextEdit::closeEvent(event);
+    if (st != State::Modified) {
+        qDebug() << (int)st;
+        event->accept();
+        QTextEdit::closeEvent(event);
+    } else {
+        event->ignore();
+    }
 }
 
 void DocWindow::load(const QString& str) {
@@ -35,8 +38,8 @@ void DocWindow::load(const QString& str) {
          setPlainText(stream.readAll());
          file.close();
          setFileName(str);
+         st = State::Saved;
     }
-    modified = false;
 }
 
 void DocWindow::save() {
@@ -45,8 +48,8 @@ void DocWindow::save() {
     if (file.open(QIODevice::WriteOnly)) {
         QTextStream(&file) << toPlainText();
         file.close();
+        st = State::Saved;
     }
-    modified = false;
 }
 
 void DocWindow::saveAs(const QString& str) {
@@ -66,8 +69,9 @@ void DocWindow::slotLoad(const QString& str) {
 }
 
 void DocWindow::slotTextChanged() {
-    modified = true;
+    st = State::Modified;
 }
+
 
 
 

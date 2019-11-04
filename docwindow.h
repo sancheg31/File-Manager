@@ -18,13 +18,14 @@ public:
     void save();
     void saveAs(const QString&);
 
-    bool isModified() const;
+    State state() const { return st; }
+    void setState(State state) { st = state; }
 
 protected:
     void closeEvent(QCloseEvent*);
 
 private:
-    bool modified;
+    State st;
     QString fName;
 
 protected slots:

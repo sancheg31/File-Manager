@@ -7,8 +7,9 @@
 
 #include "Interfaces/IDocument.h"
 #include "Interfaces/ISettings.h"
+#include "Interfaces/ISaveable.h"
 
-class TextEditor: public QObject, public ISettings {
+class TextEditor: public QObject, private ISettings {
 Q_OBJECT
 public:
     TextEditor(QObject * obj = nullptr);
