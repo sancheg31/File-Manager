@@ -96,7 +96,7 @@ bool Spreadsheet::writeFile(const QString &fileName) {
 
 bool Spreadsheet::readFile(const QString &fileName) {
     QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly)) {
+    if (!file.open(QIODevice::ReadOnly) && !fileName.endsWith(".sp")) {
         QMessageBox::warning(this, tr("Spreadsheet"), tr("Cannot read file %1:\n%2.")
                              .arg(file.fileName())
                              .arg(file.errorString()));
@@ -198,7 +198,7 @@ void Spreadsheet::recalculate() {
     for (int i = 0; i < RowCount; ++i) {
         for (int j = 0; j < ColumnCount; ++j) {
             if (cell(i, j))
-                cell(i, j)->setDirty();
+                cell(i, j)->setModified();
         }
     }
     viewport()->update();

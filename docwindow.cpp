@@ -18,10 +18,8 @@ void DocWindow::setFileName(const QString & str) {
 }
 
 void DocWindow::closeEvent(QCloseEvent * event) {
-    qDebug() << "DocWindow::closeEvent(): State is: " << (int)st;
     emit fileClosed(fileName());
     if (st != State::Modified) {
-        qDebug() << "DocWindow::closeEvent(): State changes for: " << (int)st;
         event->accept();
         QTextEdit::closeEvent(event);
     } else {
@@ -39,6 +37,7 @@ void DocWindow::load(const QString& str) {
          file.close();
          setFileName(str);
          st = State::Saved;
+         setWindowModified(false);
          emit stateChanged(st);
     }
 }
@@ -50,6 +49,7 @@ void DocWindow::save() {
         QTextStream(&file) << toPlainText();
         file.close();
         st = State::Saved;
+        setWindowModified(false);
         emit stateChanged(st);
     }
 }
@@ -72,6 +72,7 @@ void DocWindow::slotLoad(const QString& str) {
 
 void DocWindow::slotTextChanged() {
     st = State::Modified;
+    setWindowModified(true);
     emit stateChanged(st);
 }
 

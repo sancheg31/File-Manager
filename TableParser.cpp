@@ -52,8 +52,6 @@ TableParser::TableParser(Spreadsheet* s): sp(s) {
 
 TableParser::~TableParser() {}
 
-#include <QDebug>
-
 QVariant TableParser::getFactor(const QString &str, int &pos) const {
     QVariant result = 0.0;
     QRegExp regExpColumn(QString("[A-Za-z]{1,") + QString::number(sp->rowCount()/26 + 1) + QString("}"));
@@ -70,8 +68,6 @@ QVariant TableParser::getFactor(const QString &str, int &pos) const {
     }
     bool ok;
     result = (column+row).toDouble(&ok);
-    if (ok)
-        qDebug() << "TableParser::getFactor(): factor found " << result;
     if (!ok) {
         if (regExpColumn.exactMatch(column) && regExpRow.exactMatch(row)) {
             int tabColumn = 0;
@@ -80,12 +76,7 @@ QVariant TableParser::getFactor(const QString &str, int &pos) const {
             int tabRow = row.toInt()-1;
 
             Cell *c = static_cast<Cell*>(sp->item(tabRow, tabColumn));
-            if (c) {
-                qDebug() << "TableParser::getFactor(): found value: " << c->value();
-                result = c->value();
-            } else {
-                result = 0.0;
-            }
+            result = (c) ? c->value() : 0.0;
         } else {
             result = QVariant{};
         }

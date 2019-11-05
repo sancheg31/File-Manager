@@ -5,11 +5,11 @@
 #include "Spreadsheet.h"
 #include "TableParser.h"
 
-Cell::Cell() {
-    setDirty();
+Cell::Cell(): modified(true) {
+
 }
 
-QTableWidgetItem *Cell::clone() const {
+QTableWidgetItem* Cell::clone() const {
     return new Cell(*this);
 }
 
@@ -17,7 +17,7 @@ void Cell::setData(int role, const QVariant &value)
 {
     QTableWidgetItem::setData(role, value);
     if (role == Qt::EditRole)
-        setDirty();
+        setModified();
 }
 
 QVariant Cell::data(int role) const {
@@ -48,7 +48,7 @@ QString Cell::formula() const {
     return data(Qt::EditRole).toString();
 }
 
-void Cell::setDirty() {
+void Cell::setModified() {
     modified = true;
 }
 
@@ -57,7 +57,7 @@ QVariant Cell::value() const {
     if (modified) {
         modified = false;
 
-        QString formulaStr = formula();
+        QString formulaStr = data(Qt::EditRole).toString();
         if (formulaStr.startsWith('\'')) {
             cachedValue = formulaStr.mid(1);
         } else if (formulaStr.startsWith('=')) {
@@ -69,117 +69,10 @@ QVariant Cell::value() const {
             if (ok) {
                 cachedValue = d;
             } else {
-                cachedValue = formulaStr;
+                cachedValue = (formulaStr.isEmpty()) ? 0.0 : QVariant{};
             }
         }
     }
     return cachedValue;
 
 }
-/*
-QVariant Cell::evalExpression(const QString &str, int &pos) const {
-
-    QVariant result = evalTerm(str, pos);
-    while (str[pos] != QChar::Null) {
-        QChar op = str[pos];
-        if (op != '+' && op != '-')
-            return result;
-        ++pos;
-
-        QVariant term = evalTerm(str, pos);
-        if (result.type() == QVariant::Double
-                && term.type() == QVariant::Double) {
-            if (op == '+') {
-                result = result.toDouble() + term.toDouble();
-            } else {
-                result = result.toDouble() - term.toDouble();
-            }
-        } else {
-            result = Invalid;
-        }
-    }
-    return result;
-}
-
-QVariant Cell::evalTerm(const QString &str, int &pos) const {
-
-    QVariant result = evalFactor(str, pos);
-    while (str[pos] != QChar::Null) {
-        QChar op = str[pos];
-        if (op != '*' && op != '/')
-            return result;
-        ++pos;
-
-        QVariant factor = evalFactor(str, pos);
-        if (result.type() == QVariant::Double
-                && factor.type() == QVariant::Double) {
-            if (op == '*') {
-                result = result.toDouble() * factor.toDouble();
-            } else {
-                if (factor.toDouble() == 0.0) {
-                    result = Invalid;
-                } else {
-                    result = result.toDouble() / factor.toDouble();
-                }
-            }
-        } else {
-            result = Invalid;
-        }
-    }
-    return result;
-}
-
-QVariant Cell::evalFactor(const QString &str, int &pos) const {
-
-    QVariant result;
-    bool negative = false;
-
-    if (str[pos] == '-') {
-        negative = true;
-        ++pos;
-    }
-
-    if (str[pos] == '(') {
-        ++pos;
-        result = evalExpression(str, pos);
-        if (str[pos] != ')')
-            result = Invalid;
-        ++pos;
-    } else {
-        QRegExp regExp("[A-Za-z][1-9][0-9]{0,2}");
-        QString token;
-
-        while (str[pos].isLetterOrNumber() || str[pos] == '.') {
-            token += str[pos];
-            ++pos;
-        }
-
-        if (regExp.exactMatch(token)) {
-            int column = token[0].toUpper().unicode() - 'A';
-            int row = token.mid(1).toInt() - 1;
-
-            Cell *c = static_cast<Cell *>(
-                              tableWidget()->item(row, column));
-            if (c) {
-                result = c->value();
-            } else {
-                result = 0.0;
-            }
-        } else {
-            bool ok;
-            result = token.toDouble(&ok);
-            if (!ok)
-                result = Invalid;
-        }
-    }
-
-    if (negative) {
-        if (result.type() == QVariant::Double) {
-            result = -result.toDouble();
-        } else {
-            result = Invalid;
-        }
-    }
-    return result;
-}
-*/

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QFileInfo>
 #include <QMainWindow>
 #include <QTableWidget>
 #include <QSettings>
@@ -23,6 +24,8 @@ public:
     explicit SpreadsheetWindow(QWidget *parent = nullptr);
     ~SpreadsheetWindow();
 
+public slots:
+    void loadFile(const QFileInfo&);
 protected:
     void closeEvent(QCloseEvent *);
 
@@ -41,8 +44,9 @@ private slots:
     void slotShow();
 
     void slotOpenRecentFile();
-    void slotUpdateStatusBar();
+    void slotUpdateToolBar();
     void slotSpreadsheetModified();
+    void slotLineEdited();
 
 private:
 
@@ -65,11 +69,11 @@ private:
     void updateRecentFileActions();
     QString strippedName(const QString &fullFileName);
 
-    Spreadsheet * sheet;
-    QTableWidget * table;
-    FindDialog *findDialog;
-    QLabel *locationLabel;
-    QLabel *formulaLabel;
+    Spreadsheet* sheet;
+    QTableWidget* table;
+    FindDialog* findDialog;
+    QLabel* locationLabel;
+    QLineEdit* formulaEdit;
     QSettings* settings;
     QStringList recentFile;
     QString curFile;

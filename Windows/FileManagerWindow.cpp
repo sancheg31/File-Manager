@@ -76,6 +76,14 @@ void FileManagerWindow::loadFile(const QModelIndex& index) {
     loadFile(fileManager->fileInfo(index));
 }
 
+void FileManagerWindow::loadSpreadsheet(const QFileInfo & fileInfo) {
+    if (!fileInfo.isFile())
+        return;
+    spreadsheet->loadFile(fileInfo);
+    spreadsheet->show();
+    spreadsheet->raise();
+}
+
 void FileManagerWindow::slotFocusChanged(QWidget *, QWidget* now) {
     if (now == rightPane()->focusWidget() || now == rightPane()->pathLine()) {
         setActivePane(rightPane());
@@ -489,6 +497,7 @@ Pane* FileManagerWindow::createPane() {
     Pane * p = new Pane(fileManager->sourceModel(), splitter);
     connect(p, SIGNAL(fileLoaded(const QFileInfo&)), this, SLOT(loadFile(const QFileInfo&)));
     connect(p, SIGNAL(directoryLoaded(const QModelIndex&)), this, SLOT(loadDirectoryTree(const QModelIndex&)));
+    connect(p, SIGNAL(spreadsheetLoaded(const QFileInfo&)), this, SLOT(loadSpreadsheet(const QFileInfo&)));
     connect(p, SIGNAL(contextMenuChanged(const QModelIndexList&, const QPoint&)),
             this, SLOT(slotShowContextPaneMenu(const QModelIndexList&, const QPoint&)));
     return p;

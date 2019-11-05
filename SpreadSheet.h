@@ -16,6 +16,7 @@ public:
 
     QString currentLocation() const;
     QString currentFormula() const;
+    void setCurrentFormula(const QString& str) { setFormula(currentRow(), currentColumn(), str); }
     QTableWidgetSelectionRange selectedRange() const;
 
     void clear();

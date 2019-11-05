@@ -131,7 +131,6 @@ void TextEditor::slotStateChanged(IDocument::State state) {
         activeDocument()->setWindowIcon(QPixmap(":/Images/ModifiedNewFile.png"));
     else if (state == IDocument::State::Saved)
         activeDocument()->setWindowIcon(QPixmap(":/Images/NewFile.png"));
-    qDebug() << "TextEditor::slotStateChanged(): Icon should be set";
 }
 
 //private methods

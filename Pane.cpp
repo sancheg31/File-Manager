@@ -76,6 +76,8 @@ void Pane::slotDoubleClickedOnEntry(const QFileInfo& fileInfo) {
         moveTo(fileInfo.absoluteFilePath());
     } else if (fileInfo.isFile() && fileInfo.absoluteFilePath().endsWith(".txt")) {
         emit fileLoaded(fileInfo);
+    } else if (fileInfo.isFile() && fileInfo.absoluteFilePath().endsWith(".sp")) {
+        emit spreadsheetLoaded(fileInfo);
     } else {
         QDesktopServices::openUrl(QUrl::fromLocalFile(fileInfo.absoluteFilePath()));
     }

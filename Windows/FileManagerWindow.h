@@ -56,6 +56,7 @@ public slots:
     void loadDirectory(const QFileInfo&);
     void loadFile(const QFileInfo&);
     void loadFile(const QModelIndex&);
+    void loadSpreadsheet(const QFileInfo&);
 
 private slots:
 

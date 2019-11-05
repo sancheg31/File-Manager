@@ -36,10 +36,18 @@ SpreadsheetWindow::SpreadsheetWindow(QWidget *parent) : QMainWindow(parent), she
 
     setCurrentFile("");
 
+    connect(sheet, SIGNAL(currentCellChanged(int,int,int,int)), this, SLOT(slotUpdateToolBar()));
+    connect(sheet, SIGNAL(modified()), this, SLOT(slotSpreadsheetModified()));
+
 }
 
 SpreadsheetWindow::~SpreadsheetWindow() {
 
+}
+
+void SpreadsheetWindow::loadFile(const QFileInfo & fileInfo) {
+    if (okToContinue() && fileInfo.isFile())
+        sheet->readFile(fileInfo.fileName());
 }
 
 bool SpreadsheetWindow::okToContinue() {
@@ -160,14 +168,19 @@ void SpreadsheetWindow::slotOpenRecentFile(){
     }
 }
 
-void SpreadsheetWindow::slotUpdateStatusBar(){
+void SpreadsheetWindow::slotUpdateToolBar(){
     locationLabel->setText(sheet->currentLocation());
-    formulaLabel->setText(sheet->currentFormula());
+    formulaEdit->setText(sheet->currentFormula());
 }
 
-void SpreadsheetWindow::slotSpreadsheetModified(){
+void SpreadsheetWindow::slotSpreadsheetModified() {
     setWindowModified(true);
-    slotUpdateStatusBar();
+    slotUpdateToolBar();
+}
+
+void SpreadsheetWindow::slotLineEdited() {
+    sheet->setCurrentFormula(formulaEdit->text());
+    slotSpreadsheetModified();
 }
 
 void SpreadsheetWindow::closeEvent(QCloseEvent * e) {
@@ -390,22 +403,28 @@ void SpreadsheetWindow::createToolBars(){
     editToolBar->addSeparator();
     editToolBar->addActions(QList<QAction*>() << findAction << goToCellAction);
     editToolBar->addSeparator();
+
+    locationLabel = new QLabel(" W999 ");
+    locationLabel->setAlignment(Qt::AlignCenter);
+    locationLabel->setMinimumSize(locationLabel->sizeHint());
+    locationLabel->setMaximumSize(locationLabel->sizeHint());
+
+    formulaEdit = new QLineEdit("                     ");
+    formulaEdit->setFrame(QFrame::Box | QFrame::Plain);
+    formulaEdit->setFixedHeight(editToolBar->height()*0.75);
+    formulaEdit->setAlignment(Qt::AlignHCenter | Qt::AlignLeft);
+    formulaEdit->setMinimumSize(formulaEdit->sizeHint());
+    formulaEdit->setMaximumSize(formulaEdit->sizeHint()*3);
+    editToolBar->addWidget(locationLabel);
+    editToolBar->addWidget(formulaEdit);
+
+    connect(formulaEdit, SIGNAL(editingFinished()), this, SLOT(slotLineEdited()));
+    slotUpdateToolBar();
+
 }
 
-void SpreadsheetWindow::createStatusBar(){
-    locationLabel = new QLabel(" W999 ");
-    locationLabel->setAlignment(Qt::AlignHCenter);
-    locationLabel->setMinimumSize(locationLabel->sizeHint());
+void SpreadsheetWindow::createStatusBar() {
 
-    formulaLabel = new QLabel;
-    formulaLabel->setIndent(3);
-    statusBar()->addWidget(locationLabel);
-    statusBar()->addWidget(formulaLabel, 1);
-
-    connect(sheet, SIGNAL(currentCellChanged(int,int,int,int)), this, SLOT(slotUpdateStatusBar()));
-    connect(sheet, SIGNAL(modified()), this, SLOT(slotSpreadsheetModified()));
-
-    slotUpdateStatusBar();
 }
 
 

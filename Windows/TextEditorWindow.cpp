@@ -36,6 +36,7 @@ QSettings* TextEditorWindow::restoreState() {
     restoreGeometry(settings->value("Geometry").toByteArray());
     for (auto & x: textEditor->getDocuments()) {
         area->addSubWindow(x);
+        x->setWindowIcon(QIcon(":/Images/NewFile.png"));
         x->show();
     }
     return settings;

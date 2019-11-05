@@ -55,6 +55,7 @@ private slots:
 signals:
     void fileLoaded(const QFileInfo&);
     void directoryLoaded(const QModelIndex&);
+    void spreadsheetLoaded(const QFileInfo&);
     void contextMenuChanged(const QModelIndexList&, const QPoint&);
 };
 

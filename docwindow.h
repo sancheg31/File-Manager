@@ -19,7 +19,7 @@ public:
     void saveAs(const QString&);
 
     State state() const { return st; }
-    void setState(State state) { st = state; }
+    void setState(State state) { st = state; setWindowModified(st == State::Modified); }
 
 protected:
     void closeEvent(QCloseEvent*);
