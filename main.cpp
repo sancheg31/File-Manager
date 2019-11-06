@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
     app.setApplicationName("File Manager");
 
     QSplashScreen* splash = new QSplashScreen;
-    splash->setPixmap(QPixmap(":/Images/SplashScreen.jpg"));
+    splash->setPixmap(QPixmap(":/Images/FileManager.jpg"));
     splash->show();
     splash->showMessage(QObject::tr("Setting up the main window..."), Qt::AlignRight | Qt::AlignTop , Qt::white);
 

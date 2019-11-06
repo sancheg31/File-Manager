@@ -2,6 +2,7 @@
 
 #include <QTableWidget>
 
+#include "ArithmeticParser/OperationTable.h"
 
 class Cell;
 class SpreadsheetCompare;
@@ -25,11 +26,17 @@ public:
     void sort(const SpreadsheetCompare &compare);
 
     TableParser* parser() const { return tabParser; }
-    static const int RowCount = 30;
-    static const int ColumnCount = 26;
+
     static const int CheckValue = 0x123FBC78;
 
 public slots:
+
+    void slotAddRow(int before);
+    void slotAddColumn(int before);
+
+    void slotDeleteRow(int before);
+    void slotDeleteColumn(int before);
+
     void cut();
     void copy();
     void paste();
@@ -45,7 +52,7 @@ signals:
     void modified();
 
 private slots:
-    void slotSomethingChanged();
+    void slotSpreadsheetChanged();
 
 private:
 
@@ -54,8 +61,22 @@ private:
     QString formula(int row, int column) const;
     void setFormula(int row, int column, const QString &formula);
 
-    bool autoRecalc;
+    QString columnToString(int) const;
+    void setHorizontalHeader(int);
+    OperationTable createOperationTable();
+
+
+    int rCount;
+    int colCount;
+    QPair<int, int> start;
+    QPair<int, int> end;
+    QVector<QVector<QString>> bufferData;
+
+    OperationTable operations;
     TableParser* tabParser;
+    bool autoRecalc;
+
+
 };
 
 

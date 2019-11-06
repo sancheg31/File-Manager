@@ -258,7 +258,7 @@ QMenu* TextEditorWindow::createEditMenu(QToolBar* topToolBar) const {
     connect(deleteAction, SIGNAL(triggered()), this, SLOT(slotDel()));
     connect(&textEditor->getDocuments(), SIGNAL(containerIsEmpty(bool)), deleteAction, SLOT(setDisabled(bool)));
 
-    Action* selectAllAction = Action::create(QIcon(":/Images/SelectAll.png"), "&Select All", "Select All Text", QKeySequence::SelectAll);
+    Action* selectAllAction = Action::create(QIcon(":/Images/SelectAllText.png"), "&Select All", "Select All Text", QKeySequence::SelectAll);
     selectAllAction->setDisabled(true);
     connect(selectAllAction, SIGNAL(triggered()), this, SLOT(slotSelectAll()));
     connect(&textEditor->getDocuments(), SIGNAL(containerIsEmpty(bool)), selectAllAction, SLOT(setDisabled(bool)));

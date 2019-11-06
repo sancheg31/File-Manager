@@ -7,7 +7,7 @@
 
 class TableParser: public Parser {
 public:
-    TableParser(Spreadsheet*);
+    TableParser(Spreadsheet*, const OperationTable&);
     virtual ~TableParser() override;
 
 protected:

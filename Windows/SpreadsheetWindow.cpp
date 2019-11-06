@@ -1,6 +1,7 @@
 #include <QtGui>
 #include <QtWidgets>
 
+#include "Action.h"
 #include "spreadsheet.h"
 #include "SpreadSheetCompare.h"
 #include "SpreadsheetWindow.h"
@@ -159,6 +160,22 @@ void SpreadsheetWindow::slotShow() {
     raise();
 }
 
+void SpreadsheetWindow::slotNewRow() {
+    sheet->slotAddRow(sheet->currentRow());
+}
+
+void SpreadsheetWindow::slotNewColumn() {
+    sheet->slotAddColumn(sheet->currentColumn());
+}
+
+void SpreadsheetWindow::slotDeleteRow() {
+    sheet->slotDeleteRow(sheet->currentRow());
+}
+
+void SpreadsheetWindow::slotDeleteColumn() {
+    sheet->slotDeleteColumn(sheet->currentColumn());
+}
+
 void SpreadsheetWindow::slotOpenRecentFile(){
     if (okToContinue()) {
         QAction* action = qobject_cast<QAction*>(sender());
@@ -256,25 +273,16 @@ void SpreadsheetWindow::updateRecentFileActions() {
 
 void SpreadsheetWindow::createActions(){
 
-    newAction = new QAction(QIcon(":/Images/NewFile.png"), tr("&New"), this);
-    newAction->setShortcut(QKeySequence::New);
-    newAction->setStatusTip("Create Spreadsheet File");
+    newAction = Action::create(QIcon(":/Images/NewFile.png"), tr("&New"), "Create Spreadsheet File", QKeySequence::New);
     connect(newAction, SIGNAL(triggered()), this, SLOT(slotNewFile()));
 
-    openAction = new QAction(QIcon(":/Images/Open.png"), tr("&Open"), this);
-    openAction->setShortcut(QKeySequence::Open);
-    openAction->setStatusTip("Open Spreadsheet File");
+    openAction = Action::create(QIcon(":/Images/Open.png"), tr("&Open"), "Open Spreadsheet File", QKeySequence::Open);
     connect(openAction, SIGNAL(triggered()), this, SLOT(slotOpen()));
 
-    saveAction = new QAction(QIcon(":/Images/Save.png"), tr("&Save"), this);
-    saveAction->setShortcut(QKeySequence::Save);
-    saveAction->setStatusTip("Save Spreadsheet File");
+    saveAction = Action::create(QIcon(":/Images/Save.png"), tr("&Save"), "Save Spreadsheet File", QKeySequence::Save);
     connect(saveAction, SIGNAL(triggered()), this, SLOT(slotSave()));
 
-
-    saveAsAction = new QAction(QIcon(":/Images/SaveAs.png"), tr("&Save As..."), this);
-    saveAsAction->setShortcut(QKeySequence::SaveAs);
-    saveAsAction->setStatusTip("Save Spreadsheet File As");
+    saveAsAction = Action::create(QIcon(":/Images/SaveAs.png"), tr("&Save As..."), "Save Spreadsheet File As", QKeySequence::SaveAs);
     connect(saveAsAction, SIGNAL(triggered()), this, SLOT(slotSaveAs()));
 
     for(int i = 0; i < MaxRecentFiles; i++){
@@ -283,25 +291,28 @@ void SpreadsheetWindow::createActions(){
         connect(recentFileActions[i], SIGNAL(triggered()), this, SLOT(slotOpenRecentFile()));
     }
 
-    exitAction = new QAction(QIcon(":/Images/Exit.png"), tr("E&xit"), this);
-    exitAction->setShortcut(QKeySequence::Quit);
-    exitAction->setStatusTip("Exit the application");
+    exitAction = Action::create(QIcon(":/Images/Exit.png"), tr("E&xit"), "Save Spreadsheet File As", QKeySequence::Quit);
     connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
-    cutAction = new QAction(QIcon(":/Images/Cut.png"), tr("Cu&t"), this);
-    cutAction->setShortcut(QKeySequence::Cut);
-    cutAction->setStatusTip("Cut");
+    newColumnAction = Action::create(QIcon(), tr("I&nsert Column"), tr("Inserts empty column before selected one"));
+    connect(newColumnAction, SIGNAL(triggered()), this, SLOT(slotNewColumn()));
+
+    newRowAction = Action::create(QIcon(), tr("I&nsert Row"), tr("Inserts empty row before selected one"));
+    connect(newRowAction, SIGNAL(triggered()), this, SLOT(slotNewRow()));
+
+    deleteColumnAction = Action::create(QIcon(), tr("D&elete Column"), tr("Deletes column before selected one"));
+    connect(newColumnAction, SIGNAL(triggered()), this, SLOT(slotDeleteColumn()));
+
+    deleteRowAction = Action::create(QIcon(), tr("D&elete Row"), tr("Deletes row before selected one"));
+    connect(newRowAction, SIGNAL(triggered()), this, SLOT(slotDeleteRow()));
+
+    cutAction = Action::create(QIcon(":/Images/Cut.png"), tr("Cu&t"), "Cut Selected Cells", QKeySequence::Cut);
     connect(cutAction, SIGNAL(triggered()), sheet, SLOT(cut()));
 
-
-    copyAction = new QAction(QIcon(":/Images/Copy.png"), tr("&Copy"), this);
-    copyAction->setShortcut(QKeySequence::Copy);
-    copyAction->setStatusTip("Copy");
+    copyAction = Action::create(QIcon(":/Images/Copy.png"), tr("&Copy"), "Copy Selected Cells", QKeySequence::Copy);
     connect(copyAction, SIGNAL(triggered()), sheet, SLOT(copy()));
 
-    pasteAction = new QAction(QIcon(":/Images/Paste.png"), tr("&Paste"), this);
-    pasteAction->setShortcut(QKeySequence::Paste);
-    pasteAction->setStatusTip("Paste");
+    pasteAction = Action::create(QIcon(":/Images/Paste.png"), tr("&Paste"), "Paste Selected Cells", QKeySequence::Paste);
     connect(pasteAction, SIGNAL(triggered()), sheet, SLOT(paste()));
 
     deleteAction = new QAction(QIcon(":/Images/Delete.png"), tr("Delete"), this);
@@ -374,6 +385,10 @@ void SpreadsheetWindow::createMenus(){
     selectSubMenu = editMenu->addMenu(tr("&Select"));
     selectSubMenu->addActions(QList<QAction*>() << rowAction << columnAction << allAction);
     editMenu->addSeparator();
+    QMenu * newSubMenu = editMenu->addMenu(tr("&Create"));
+    newSubMenu->addActions(QList<QAction*>() << newRowAction << newColumnAction);
+    QMenu * deleteSubMenu = editMenu->addMenu(tr("&Delete"));
+    deleteSubMenu->addActions(QList<QAction*>() << deleteRowAction << deleteColumnAction);
     editMenu->addActions(QList<QAction*>() << findAction << goToCellAction);
 
     toolsMenu = menuBar()->addMenu(tr("&Tools"));
@@ -390,7 +405,8 @@ void SpreadsheetWindow::createMenus(){
 }
 
 void SpreadsheetWindow::createContextMenu(){
-    sheet->addActions(QList<QAction*>() << cutAction << copyAction << pasteAction);
+    sheet->addActions(QList<QAction*>() << newRowAction << newColumnAction << deleteRowAction << deleteColumnAction <<
+                      cutAction << copyAction << pasteAction);
     sheet->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
@@ -404,19 +420,24 @@ void SpreadsheetWindow::createToolBars(){
     editToolBar->addActions(QList<QAction*>() << findAction << goToCellAction);
     editToolBar->addSeparator();
 
+    dataToolBar = addToolBar(tr("&Data"));
     locationLabel = new QLabel(" W999 ");
     locationLabel->setAlignment(Qt::AlignCenter);
     locationLabel->setMinimumSize(locationLabel->sizeHint());
     locationLabel->setMaximumSize(locationLabel->sizeHint());
 
-    formulaEdit = new QLineEdit("                     ");
-    formulaEdit->setFrame(QFrame::Box | QFrame::Plain);
+    formulaEdit = new QLineEdit("                 ");
+    formulaEdit->setFrame(true);
     formulaEdit->setFixedHeight(editToolBar->height()*0.75);
     formulaEdit->setAlignment(Qt::AlignHCenter | Qt::AlignLeft);
     formulaEdit->setMinimumSize(formulaEdit->sizeHint());
-    formulaEdit->setMaximumSize(formulaEdit->sizeHint()*3);
-    editToolBar->addWidget(locationLabel);
-    editToolBar->addWidget(formulaEdit);
+
+    QLabel * dummy = new QLabel("     ");
+    dummy->setMinimumSize(locationLabel->sizeHint());
+    dummy->setMinimumSize(locationLabel->sizeHint());
+    dataToolBar->addWidget(locationLabel);
+    dataToolBar->addWidget(formulaEdit);
+    editToolBar->addWidget(dummy);
 
     connect(formulaEdit, SIGNAL(editingFinished()), this, SLOT(slotLineEdited()));
     slotUpdateToolBar();
@@ -424,7 +445,7 @@ void SpreadsheetWindow::createToolBars(){
 }
 
 void SpreadsheetWindow::createStatusBar() {
-
+    statusBar()->show();
 }
 
 

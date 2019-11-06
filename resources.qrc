@@ -35,5 +35,10 @@
         <file>Images/Replace.png</file>
         <file>Images/FindPrevious.png</file>
         <file>Images/ModifiedNewFile.png</file>
+        <file>Images/FileManager.jpg</file>
+        <file>Images/SelectAllText.png</file>
+        <file>Images/Icons.png</file>
+        <file>Images/List.png</file>
+        <file>Images/Table.png</file>
     </qresource>
 </RCC>

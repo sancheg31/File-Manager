@@ -245,7 +245,10 @@ void FileManagerWindow::slotNewFolder() {
     if (focusWidget() != activePane()->focusWidget())
         return;
     QAbstractItemView* currentView = activePane()->focusView();
-    QModelIndex newDir = fileManager->newFolder(currentView->rootIndex());
+    auto rootInd = currentView->rootIndex();
+    if (!rootInd.isValid())
+        return;
+    QModelIndex newDir = fileManager->newFolder(rootInd);
     currentView->selectionModel()->setCurrentIndex(newDir, QItemSelectionModel::ClearAndSelect);
     currentView->edit(newDir);
 }
@@ -254,7 +257,10 @@ void FileManagerWindow::slotNewTxt() {
     if (focusWidget() != activePane()->focusWidget())
         return;
     QAbstractItemView* currentView = activePane()->focusView();
-    QModelIndex fileIndex = fileManager->newTxt(currentView->rootIndex());
+    auto rootInd = currentView->rootIndex();
+    if (!rootInd.isValid())
+        return;
+    QModelIndex fileIndex = fileManager->newTxt(rootInd);
     currentView->setCurrentIndex(fileIndex);
     currentView->edit(fileIndex);
 }
@@ -445,7 +451,7 @@ void FileManagerWindow::createActions() {
     aboutCreatorAction = Action::create(QIcon(":/Images/About.png"), tr("&About"), "About");
     connect(aboutCreatorAction, SIGNAL(triggered()), this, SLOT(slotShowAboutCreatorBox()));
 
-    propertiesAction = Action::create(QIcon(":/Images/Properties.png"), tr("&Properties"),
+    propertiesAction = Action::create(QIcon(":/Images/About.png"), tr("&Properties"),
                                    "Properties", QKeySequence(Qt::CTRL + Qt::Key_R));
     connect(propertiesAction, SIGNAL(triggered()), this, SLOT(slotShowProperties()));
 }
@@ -505,15 +511,15 @@ Pane* FileManagerWindow::createPane() {
 
 void FileManagerWindow::createViewChangeActions() {
 
-    detailViewAction = Action::create(QIcon(":/Images/DetailView.png"), tr("Table"), "Table View");
+    detailViewAction = Action::create(QIcon(":/Images/List.png"), tr("Table"), "Table View");
     detailViewAction->setCheckable(true);
     connect(detailViewAction, SIGNAL(triggered()), paneSwitcher, SLOT(slotToggleToDetailView()));
 
-    iconViewAction = Action::create(QIcon(":/Images/IconView.png"), tr("List"), "List View");
+    iconViewAction = Action::create(QIcon(":/Images/Table.png"), tr("List"), "List View");
     iconViewAction->setCheckable(true);
     connect(iconViewAction, SIGNAL(triggered()), paneSwitcher, SLOT(slotToggleToIconView()));
 
-    tileViewAction = Action::create(QIcon(":/Images/TileView.png"), tr("Tile"), "Tile View");
+    tileViewAction = Action::create(QIcon(":/Images/Icons.png"), tr("Tile"), "Tile View");
     tileViewAction->setCheckable(true);
     connect(tileViewAction, SIGNAL(triggered()), paneSwitcher, SLOT(slotToggleToTileView()));
 }

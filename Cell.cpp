@@ -6,15 +6,13 @@
 #include "TableParser.h"
 
 Cell::Cell(): modified(true) {
-
 }
 
 QTableWidgetItem* Cell::clone() const {
     return new Cell(*this);
 }
 
-void Cell::setData(int role, const QVariant &value)
-{
+void Cell::setData(int role, const QVariant &value) {
     QTableWidgetItem::setData(role, value);
     if (role == Qt::EditRole)
         setModified();
@@ -57,19 +55,20 @@ QVariant Cell::value() const {
     if (modified) {
         modified = false;
 
-        QString formulaStr = data(Qt::EditRole).toString();
+        QString formulaStr = formula();
         if (formulaStr.startsWith('\'')) {
             cachedValue = formulaStr.mid(1);
         } else if (formulaStr.startsWith('=')) {
             auto sp = qobject_cast<Spreadsheet*>(tableWidget());
             cachedValue = sp->parser()->parse(formulaStr);
+
         } else {
             bool ok;
             double d = formulaStr.toDouble(&ok);
             if (ok) {
                 cachedValue = d;
             } else {
-                cachedValue = (formulaStr.isEmpty()) ? 0.0 : QVariant{};
+                cachedValue = (formulaStr.isEmpty()) ? 0 : formulaStr;
             }
         }
     }

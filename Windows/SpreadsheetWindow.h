@@ -43,6 +43,11 @@ private slots:
     void slotAbout();
     void slotShow();
 
+    void slotNewRow();
+    void slotNewColumn();
+    void slotDeleteRow();
+    void slotDeleteColumn();
+
     void slotOpenRecentFile();
     void slotUpdateToolBar();
     void slotSpreadsheetModified();
@@ -54,6 +59,7 @@ private:
     Ui::SpreadsheetWindow *ui;
 
     void createActions();
+    void createOperationMenus();
     void createMenus();
     void createContextMenu();
     void createToolBars();
@@ -87,8 +93,9 @@ private:
     QMenu *optionsMenu;
     QMenu *helpMenu;
 
-    QToolBar *fileToolBar;
-    QToolBar *editToolBar;
+    QToolBar* fileToolBar;
+    QToolBar* editToolBar;
+    QToolBar* dataToolBar;
 
     QAction *newAction;
     QAction *openAction;
@@ -98,6 +105,11 @@ private:
     QAction *recentFileActions[MaxRecentFiles];
 
     QAction *exitAction;
+
+    QAction* newColumnAction;
+    QAction* newRowAction;
+    QAction* deleteRowAction;
+    QAction* deleteColumnAction;
 
     QAction *cutAction;
     QAction *copyAction;
